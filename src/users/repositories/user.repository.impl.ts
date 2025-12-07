@@ -8,29 +8,29 @@ export class UserRepositoryImpl implements UserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(): Promise<User[]> {
-    return await this.prisma.user.findMany();
+    return this.prisma.user.findMany();
   }
 
   async findById(id: number): Promise<User | null> {
-    return await this.prisma.user.findUnique({
+    return this.prisma.user.findUnique({
       where: { id }
     });
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return await this.prisma.user.findUnique({
+    return this.prisma.user.findUnique({
       where: { email }
     });
   }
 
   async create(userData: CreateUserDto): Promise<User> {
-    return await this.prisma.user.create({
+    return this.prisma.user.create({
       data: userData
     });
   }
 
   async update(id: number, userData: Partial<User>): Promise<User> {
-    return await this.prisma.user.update({
+    return this.prisma.user.update({
       where: { id },
       data: userData
     });
