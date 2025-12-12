@@ -1,6 +1,6 @@
 import { IsNotEmpty } from "class-validator";
 
-export class UpdateRecipeDTO {
+export class UpdateRecipeDto {
     @IsNotEmpty()
     name: string;
     description: string;
