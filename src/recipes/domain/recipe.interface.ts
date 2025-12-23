@@ -1,6 +1,6 @@
-import type { RecipeResponseDto } from '../dto/recipe-response.dto'
-import type { CreateRecipeDto } from '../dto/create-recipe.dto'
-import type { UpdateRecipeDto } from '../dto/update-recipe.dto'
+import type { RecipeResponseDto } from '../controllers/dto/recipe-response.dto'
+import type { CreateRecipeDto } from '../controllers/dto/create-recipe.dto'
+import type { UpdateRecipeDto } from '../controllers/dto/update-recipe.dto'
 
 export interface Recipe {
     id: number;

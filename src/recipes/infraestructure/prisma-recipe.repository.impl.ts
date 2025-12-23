@@ -1,9 +1,9 @@
-import { RecipeRepository } from "../interfaces/recipe.interface";
+import { RecipeRepository } from "../domain/recipe.interface";
 import { PrismaService } from '../../prisma/prisma.service';
 import { Injectable } from "@nestjs/common";
-import type { CreateRecipeDto } from "../dto/create-recipe.dto";
-import type { UpdateRecipeDto } from "../dto/update-recipe.dto";
-import type { RecipeResponseDto } from "../dto/recipe-response.dto";
+import type { CreateRecipeDto } from "../controllers/dto/create-recipe.dto";
+import type { UpdateRecipeDto } from "../controllers/dto/update-recipe.dto";
+import type { RecipeResponseDto } from "../controllers/dto/recipe-response.dto";
 
 @Injectable()
 export class RecipeRepositoryImpl implements RecipeRepository {

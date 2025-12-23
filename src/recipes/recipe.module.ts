@@ -1,15 +1,24 @@
 import { Module } from '@nestjs/common';
-import { RecipeController } from './recipe.controller';
-import { RecipeService } from './recipe.service';
-import { RecipeRepositoryImpl } from './repositories/recipe.repository.impl';
+import { RecipeController } from './controllers/recipe.controller';
+import { CreateRecipeUsecase } from './application/create-recipe.usecase';
+import { ListRecipesUsecase } from './application/list-recipes.usecase';
+import { DeleteRecipeUsecase } from './application/delete-recipe.usecase';
+import { GetRecipeUsecase } from './application/get-recipe.usecase';
+import { UpdateRecipeUsecase } from './application/update-recipe.usecase';
+import { RecipeRepositoryImpl } from './infraestructure/prisma-recipe.repository.impl';
 import { PrismaService } from '../prisma/prisma.service';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard } from '@nestjs/throttler';
 
+
 @Module({
     controllers: [RecipeController],
     providers: [
-        RecipeService,
+        CreateRecipeUsecase,
+        UpdateRecipeUsecase,
+        GetRecipeUsecase,
+        DeleteRecipeUsecase,
+        ListRecipesUsecase,
         PrismaService,
         {
             provide: 'RECIPE_REPOSITORY',
