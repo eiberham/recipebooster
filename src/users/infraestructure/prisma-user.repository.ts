@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service'; // You'll need to create this
-import type { UserRepository, User } from '../interfaces/user.interface';
-import type { CreateUserDto } from '../dto/create-user.dto';
-import type { UserResponseDto } from '../dto/user-response.dto';
+import type { UserRepository, User } from '../domain/user.interface';
+import type { CreateUserDto } from '../controllers/dto/create-user.dto';
+import type { UserResponseDto } from '../controllers/dto/user-response.dto';
 
 @Injectable()
 export class UserRepositoryImpl implements UserRepository {

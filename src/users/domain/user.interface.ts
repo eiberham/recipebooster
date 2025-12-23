@@ -7,9 +7,9 @@ export interface User {
     updatedAt: Date;
 }
 
-import type { CreateUserDto } from '../dto/create-user.dto';
-import type { UpdateUserDto } from '../dto/update-user.dto';
-import type { UserResponseDto } from '../dto/user-response.dto';
+import type { CreateUserDto } from '../controllers/dto/create-user.dto';
+import type { UpdateUserDto } from '../controllers/dto/update-user.dto';
+import type { UserResponseDto } from '../controllers/dto/user-response.dto';
 
 export interface UserRepository {
     findAll(): Promise<UserResponseDto[]>;

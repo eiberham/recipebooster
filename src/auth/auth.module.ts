@@ -5,7 +5,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { UserModule } from '../users/user.module';
 import { UserService } from '../users/user.service';
-import { UserRepositoryImpl } from '../users/repositories/user.repository.impl';
+import { UserRepositoryImpl } from '../users/infraestructure/prisma-user.repository';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Module({
