@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import type { IngredientRepository } from '../interfaces/ingredient.interface';
-import type { CreateIngredientDto } from '../dto/create-ingredient.dto';
-import type { UpdateIngredientDto } from '../dto/update-ingredient.dto';
-import type { IngredientResponseDto } from '../dto/ingredient-response.dto';
+import type { IngredientRepository } from '../domain/ingredient.interface';
+import type { CreateIngredientDto } from '../controllers/dto/create-ingredient.dto';
+import type { UpdateIngredientDto } from '../controllers/dto/update-ingredient.dto';
+import type { IngredientResponseDto } from '../controllers/dto/ingredient-response.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
