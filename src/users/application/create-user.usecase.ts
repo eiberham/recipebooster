@@ -3,12 +3,14 @@ import { Injectable, Inject } from '@nestjs/common';
 import type { UserRepository } from '../domain/user.interface';
 import type { UserResponseDto } from '../controllers/dto/user-response.dto';
 import { CreateUserDto } from '../controllers/dto/create-user.dto';
+import { RabbitMQProducer } from 'src/rabbitmq/rabbitmq.producer';
 
 @Injectable()
 export class CreateUserUsecase{
     constructor(
         @Inject('USER_REPOSITORY') 
-        private readonly userRepository: UserRepository
+        private readonly userRepository: UserRepository,
+        private readonly rabbitMQProducer: RabbitMQProducer
     ) {}
 
     async hashPassword(password: string): Promise<string> {
@@ -28,6 +30,13 @@ export class CreateUserUsecase{
             }
 
             user = await this.userRepository.create(payload);
+
+            await this.rabbitMQProducer.sendToQueue('email_queue', {
+                id: user.id,
+                email: user.email,
+                name: user.name
+            });
+
             return user;
         } catch (error) {
             throw error;

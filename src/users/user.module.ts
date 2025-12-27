@@ -9,6 +9,8 @@ import { UserRepositoryImpl } from './infraestructure/prisma-user.repository';
 import { PrismaService } from '../prisma/prisma.service';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import { RabbitMQProducer } from 'src/rabbitmq/rabbitmq.producer';
+import { RabbitMQService } from 'src/rabbitmq/rabbitmq.service';
 
 @Module({
     controllers: [UserController],
@@ -19,6 +21,8 @@ import { ThrottlerGuard } from '@nestjs/throttler';
         GetUserUsecase,
         DeleteUserUsecase,
         PrismaService,
+        RabbitMQProducer,
+        RabbitMQService,
         {
             provide: 'USER_REPOSITORY',
             useClass: UserRepositoryImpl,
