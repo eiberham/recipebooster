@@ -16,8 +16,8 @@ export class RabbitMQConsumer implements OnModuleInit {
             if (msg !== null) {
                 try {
                     const content = msg.content.toString()
-                    const { name, email } = JSON.parse(content)
-                    await this.emailService.send(name, email, 'Welcome to superchef!', 'Thank you for registering at superchef. We are excited to have you on board!')
+                    const { name, email, subject, body } = JSON.parse(content)
+                    await this.emailService.send(name, email, subject, body)
                     channel.ack(msg)
                 } catch (error) {
                     setTimeout(() => {

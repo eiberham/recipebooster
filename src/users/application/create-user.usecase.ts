@@ -3,7 +3,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import type { UserRepository } from '../domain/user.interface';
 import type { UserResponseDto } from '../controllers/dto/user-response.dto';
 import { CreateUserDto } from '../controllers/dto/create-user.dto';
-import { RabbitMQProducer } from 'src/rabbitmq/rabbitmq.producer';
+import { RabbitMQProducer } from '../../rabbitmq/rabbitmq.producer';
 
 @Injectable()
 export class CreateUserUsecase{
@@ -34,7 +34,11 @@ export class CreateUserUsecase{
             await this.rabbitMQProducer.sendToQueue('email_queue', {
                 id: user.id,
                 email: user.email,
-                name: user.name
+                name: user.name,
+                subject: 'Welcome to superchef!',
+                body: `
+                    Thank you for registering at superchef. 
+                    We are excited to have you on board! `
             });
 
             return user;
