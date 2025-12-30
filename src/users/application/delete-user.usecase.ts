@@ -1,5 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import type { UserRepository } from '../domain/user.interface';
+import { UserNotFoundException } from '../../common/exceptions/user-not-found.exception';
+import { Prisma } from 'generated/prisma/client';
 
 @Injectable()
 export class DeleteUserUsecase{
@@ -9,6 +11,13 @@ export class DeleteUserUsecase{
     ) {}
 
     async deleteUser(id: number): Promise<void> {
-        return this.userRepository.delete(id)
+        try {
+            await this.userRepository.delete(id)
+        }catch(e){
+            if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2025') {
+                throw new UserNotFoundException();
+            }
+            throw e;
+        }
     }
 }

@@ -19,5 +19,5 @@ export interface RecipeRepository {
     findByName(name: string): Promise<RecipeResponseDto | null>;
     create(recipe: CreateRecipeDto): Promise<RecipeResponseDto>;
     update(id: number, recipe: UpdateRecipeDto): Promise<RecipeResponseDto>;
-    delete(id: number): Promise<void>;
+    delete(id: number): Promise<RecipeResponseDto>;
 }

@@ -1,6 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common'
 import type { IngredientRepository } from '../domain/ingredient.interface';
 import type { IngredientResponseDto } from '../controllers/dto/ingredient-response.dto';
+import { IngredientNotFoundException } from '../../common/exceptions/indredient-not-found.exception';
 
 @Injectable()
 export class GetIngredientUsecase {
@@ -10,6 +11,10 @@ export class GetIngredientUsecase {
     ) {}
 
     async findById(id: number): Promise<IngredientResponseDto | null> {
-        return this.ingredientRepository.findById(id)
+        const ingredient = await this.ingredientRepository.findById(id);
+        if (!ingredient) {
+            throw new IngredientNotFoundException();
+        }
+        return ingredient;
     }
 }

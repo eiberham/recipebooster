@@ -9,8 +9,10 @@ dotenv.config();
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: new ConsoleLogger({
+      colors: true,
       json: true,
-      logLevels: process.env.LOG_LEVEL ? JSON.parse(process.env.LOG_LEVEL) : ['error', 'warn', 'log'],
+      prefix: 'Superchef',
+      logLevels: process.env.LOG_LEVEL ? JSON.parse(process.env.LOG_LEVEL) : ['error', 'warn', 'log', 'debug', 'verbose'],
     }),
   });
 

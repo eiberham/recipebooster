@@ -32,8 +32,8 @@ export class IngredientRepositoryImpl implements IngredientRepository {
         })
     }
 
-    async delete(id: number): Promise<void> {
-        await this.prisma.ingredient.delete({
+    async delete(id: number): Promise<IngredientResponseDto> {
+        return this.prisma.ingredient.delete({
             where: { id }
         })
     }

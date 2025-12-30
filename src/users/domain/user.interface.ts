@@ -24,5 +24,5 @@ export interface UserRepository {
     findByEmail(email: string): Promise<User | null>;
     create(user: Partial<CreateUserDto>): Promise<UserResponseDto>;
     update(id: number, user: UpdateUserDto): Promise<UserResponseDto>;
-    delete(id: number): Promise<void>;
+    delete(id: number): Promise<UserResponseDto>;
 }

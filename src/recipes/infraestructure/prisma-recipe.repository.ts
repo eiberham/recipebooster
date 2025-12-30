@@ -71,8 +71,8 @@ export class RecipeRepositoryImpl implements RecipeRepository {
             }
         });
     }
-    async delete(id: number): Promise<void> {
-        await this.prisma.recipe.delete({
+    async delete(id: number): Promise<RecipeResponseDto> {
+        return this.prisma.recipe.delete({
             where: { id }
         });
     }

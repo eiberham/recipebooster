@@ -21,10 +21,11 @@ describe('DeleteIngredientUseCase', () => {
     });
 
     it('should delete an ingredient', async () => {
-        ingredientRepository.delete.mockResolvedValue();
+        const ingredient = { id: 1, name: 'Sugar' };
+        ingredientRepository.delete.mockResolvedValue(ingredient);
 
-        await deleteIngredientUseCase.delete(1);
+        await deleteIngredientUseCase.delete(ingredient.id);
 
-        expect(ingredientRepository.delete).toHaveBeenCalledWith(1);
+        expect(ingredientRepository.delete).toHaveBeenCalledWith(ingredient.id);
     });
 })

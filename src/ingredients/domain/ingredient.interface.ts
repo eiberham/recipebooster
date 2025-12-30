@@ -8,5 +8,5 @@ export interface IngredientRepository {
     findById(id: number): Promise<Ingredient | null>;
     create(ingredient: Partial<Ingredient>): Promise<Ingredient>;
     update(id: number, ingredient: Partial<Ingredient>): Promise<Ingredient>;
-    delete(id: number): Promise<void>;
+    delete(id: number): Promise<Ingredient>;
 }
