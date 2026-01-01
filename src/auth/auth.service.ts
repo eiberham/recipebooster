@@ -11,7 +11,7 @@ export class AuthService {
 
     async login(email: string, password: string): Promise<string> {
         const user = await this.getUserByEmailUsecase.getUserByEmail(email)
-        const roles = user?.userRoles?.map(ur => ur.role.name) || []
+        const roles = user?.roles?.map(role => role) || []
         if (!user || !bcrypt.compareSync(password, user.password)) {
             throw new UnauthorizedException('Invalid email or password')
         }
