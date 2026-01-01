@@ -1,4 +1,31 @@
+## Table of Contents
+
+1. [Introduction](#superchef)
+2. [Routes](#routes)
+3. [Authentication & Security](#authentication--security)
+   - [JWT-based Authentication](#jwt-based-authentication)
+   - [Role-Based Access Control (RBAC)](#role-based-access-control-rbac)
+   - [Route Protection](#route-protection)
+   - [Rate Limiting](#rate-limiting)
+4. [Async Processing with RabbitMQ](#async-processing-with-rabbitmq)
+   - [Event-driven Architecture](#event-driven-architecture)
+   - [Producers & Consumers Separation](#producers--consumers-separation)
+5. [Caching (Redis)](#caching-redis)
+6. [User Preferences](#user-preferences)
+7. [AI Recipe Assistant](#ai-recipe-assistant)
+8. [Project setup](#project-setup)
+9. [Environment variables](#environment-variables)
+10. [Compile and run the project](#compile-and-run-the-project)
+11. [Run tests](#run-tests)
+12. [Deployment](#deployment)
+13. [License](#license)
+
+
 ## SuperChef
+
+<p align="center">
+  <img src="./superchef.jpg" alt="superchef" />
+</p>
 
 <table border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: none;">
   <tr>
@@ -157,10 +184,42 @@ The cache is applied to read-heavy endpoints following the **cache-aside** patte
 
 This approach keeps PostgreSQL as the sigle source of thruth while improving response times for frequent reads.
 
+## User Preferences
+
+Each user can configure dietary preferences that are stored as JSON object inside the user table.
+Suported fields:
+- `diet`: "none" | "vegetarian" | "vegan" | "omnivore"
+- `alergies`: string[]
+
+## AI Recipe Assistant
+
+Superchef includes an AI-powered assistant via the `/chat` endpoint, that helps users improve existing recipes by suggesting variations, optimizations, or substitutions based on natural language prompts.
+
+The assistant is implemented as a backend agent powered by OpenAI and orchestrated server side.
+
+All suggestions are generated in the context of a real recipe stored in the database.
+
 ## Project setup
 
 ```bash
 $ npm install
+```
+
+## Environment variables
+
+Create a `.env` file in the root of your project and add the following env vars:
+
+```bash
+DATABASE_URL=
+OPENAI_API_KEY=
+RESEND_API_KEY=
+JWT_SECRET=
+LOG_LEVEL=["log", "error", "warn", "debug", "verbose"]
+REDIS_HOST=
+REDIS_PORT=
+REDIS_USERNAME=
+REDIS_PASSWORD=
+STRIPE_API_KEY=
 ```
 
 ## Compile and run the project

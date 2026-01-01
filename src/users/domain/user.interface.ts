@@ -3,16 +3,12 @@ export interface User {
     name: string;
     email: string;
     password: string;
-    preferences?: UserPreferences;
+    stripeCustomerId?: string;
+    subscription?: Subscription;
+    preferences?: JsonValue;
     createdAt: Date;
     updatedAt: Date;
-    userRoles?: UserRole[];
-}
-
-interface UserRole {
-    role: {
-        name: string;
-    }
+    roles?: string[];
 }
 
 const diet = {
@@ -29,6 +25,9 @@ export interface UserPreferences {
     allergies: string[];
 }
 
+export type Subscription = "free" | "basic"
+
+import type { JsonValue } from 'generated/prisma/runtime/client';
 import type { CreateUserDto } from '../controllers/dto/create-user.dto';
 import type { UpdateUserDto } from '../controllers/dto/update-user.dto';
 import type { UserResponseDto } from '../controllers/dto/user-response.dto';

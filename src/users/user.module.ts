@@ -12,10 +12,12 @@ import { RabbitMQService } from 'src/rabbitmq/rabbitmq.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { CacheService } from 'src/redis/redis.service';
+import { PlanModule } from 'src/plan/plan.module';
 
 @Module({
     controllers: [UserController],
     providers: [
+        PlanModule,
         CacheService,
         JwtService,
         CreateUserUsecase,

@@ -5,8 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  provider        = "prisma-client-js"
+  output          = "../generated/prisma"
   moduleFormat    = "cjs"
   previewFeatures = ["relationJoins"]
 }
@@ -16,63 +16,101 @@ datasource db {
 }
 
 model User {
-  id        Int   @id @default(autoincrement())
-  email     String   @unique
-  name      String
-  username  String   @unique
-  password  String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @map("updated_at")
-  preferences Json @default("{}")
-  recipes   Recipe[] // A user can have multiple recipes
-  userRoles UserRole[] // A user can have multiple roles through UserRole
+  id               Int           @id @default(autoincrement())
+  email            String        @unique
+  name             String
+  username         String        @unique
+  password         String
+  stripeCustomerId String        @map("stripe_customer_id") @default("")
+  createdAt        DateTime      @default(now()) @map("created_at")
+  updatedAt        DateTime      @default(now()) @map("updated_at")
+  preferences      Json          @default("{}")
+  recipes          Recipe[] // A user can have multiple recipes
+  roles            UserRole[] // A user can have multiple roles through UserRole
+  subscription     Subscription?
+
   @@map("user")
 }
 
 model Recipe {
-  id          Int      @id @default(autoincrement())
-  name       String
+  id          Int                @id @default(autoincrement())
+  name        String
   description String?
   steps       String
-  imageUrl    String   @map("image_url")
-  userId      Int      @map("user_id")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @default(now()) @map("updated_at")
-  user        User     @relation(fields: [userId], references: [id]) // Many recipes belong to one user
+  imageUrl    String             @map("image_url")
+  userId      Int                @map("user_id")
+  createdAt   DateTime           @default(now()) @map("created_at")
+  updatedAt   DateTime           @default(now()) @map("updated_at")
+  user        User               @relation(fields: [userId], references: [id]) // Many recipes belong to one user
   ingredients RecipeIngredient[] // A recipe can have multiple ingredients through RecipeIngredient
+
   @@map("recipe")
 }
 
 model Ingredient {
-  id Int @id @default(autoincrement())
-  name String
+  id                Int                @id @default(autoincrement())
+  name              String
+  recipeIngredients RecipeIngredient[] // An ingredient can be used in multiple recipes through RecipeIngredient
+
   @@map("ingredient")
-  recipeIngredients RecipeIngredient[]  // An ingredient can be used in multiple recipes through RecipeIngredient
 }
 
 model RecipeIngredient {
-  id Int @id @default(autoincrement())
-  recipeId Int @map("recipe_id")
-  ingredientId Int @map("ingredient_id")
-  quantity Int
-  unit String
-  recipe Recipe @relation(fields: [recipeId], references: [id])
-  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+  id           Int        @id @default(autoincrement())
+  recipeId     Int        @map("recipe_id")
+  ingredientId Int        @map("ingredient_id")
+  quantity     Int
+  unit         String
+  recipe       Recipe     @relation(fields: [recipeId], references: [id])
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+
   @@map("recipe_ingredient")
 }
 
 model Role {
-  id Int @id @default(autoincrement())
-  name String @unique
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
   userRoles UserRole[]
+
   @@map("role")
 }
 
 model UserRole {
-  id Int @id @default(autoincrement())
-  userId Int @map("user_id")
-  roleId Int @map("role_id")
-  user User @relation(fields: [userId], references: [id])
-  role Role @relation(fields: [roleId], references: [id])
+  id     Int  @id @default(autoincrement())
+  userId Int  @map("user_id")
+  roleId Int  @map("role_id")
+  user   User @relation(fields: [userId], references: [id])
+  role   Role @relation(fields: [roleId], references: [id])
+
   @@map("user_role")
+}
+
+model Plan {
+  id            Int            @id @default(autoincrement())
+  name          String         @unique
+  price         Int
+  currency      String
+  stripePriceId String?        @map("stripe_price_id")
+  features      Json
+  createdAt     DateTime       @default(now()) @map("created_at")
+  subscriptions Subscription[]
+
+  @@map("plan")
+}
+
+model Subscription {
+  id     Int @id @default(autoincrement())
+  userId Int @unique @map("user_id")
+  planId Int @map("plan_id")
+
+  status               String
+  stripeSubscriptionId String   @map("stripe_subscription_id")
+  currentPeriodEnd     DateTime @map("current_period_end")
+
+  createdAt  DateTime  @default(now()) @map("created_at")
+  canceledAt DateTime? @map("canceled_at")
+  user       User      @relation(fields: [userId], references: [id])
+  plan       Plan      @relation(fields: [planId], references: [id])
+
+  @@map("subscription")
 }
