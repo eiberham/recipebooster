@@ -7,6 +7,7 @@ import { Redis } from 'ioredis';
         provide: 'REDIS_CLIENT',
         useFactory: () => {
             return new Redis({
+                keyPrefix: 'superchef:',
                 host: process.env.REDIS_HOST,
                 port: Number(process.env.REDIS_PORT),
                 username: process.env.REDIS_USERNAME,

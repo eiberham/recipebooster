@@ -7,6 +7,7 @@ import { UserModule } from '../users/user.module';
 import { GetUserByEmailUsecase } from '../users/application/get-user-by-email.usecase';
 import { UserRepositoryImpl } from '../users/infraestructure/prisma-user.repository';
 import { PrismaService } from '../prisma/prisma.service';
+import { CacheService } from 'src/redis/redis.service';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { PrismaService } from '../prisma/prisma.service';
   ],
   controllers: [AuthController],
   providers: [
+    CacheService,
     GetUserByEmailUsecase,
     PrismaService,
     {

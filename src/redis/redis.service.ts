@@ -14,4 +14,8 @@ export class CacheService {
   async get(key: string) {
     return this.redis.get(key);
   }
+
+  async del(key: string) {
+    return this.redis.del(key);
+  }
 }

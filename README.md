@@ -25,6 +25,16 @@ TLDR features:
 
 ## Routes
 
+All API endpoints are documented using **Swagger (OpenAPI)**.
+
+Once the application is running, the interactive API documentation is available at:
+
+- `GET /apis`
+
+The Swagger UI provides request/resoponse schemas, parameters, and example payloads for each endpoint.
+
+Below is a high level overview of the available routes:
+
 <table>
   <thead>
     <tr>
@@ -124,11 +134,28 @@ RBAC is applied at the route level, ensuring fine grained authorization.
   - User registration triggers a welcome email
   - Extensible to notifications
 
-#### Producers & COnsumers Separation
+#### Producers & Consumers Separation
 
 - API publishes domain events
 - Workers consume and process them independently
 - Designed to be monolith-friendly, without premature microservices.
+
+## Caching (Redis)
+
+Superchef uses Redis as an in-memory cache to reduce latency and decrease load on the primary PostgreSQL database.
+
+The cache is applied to read-heavy endpoints following the **cache-aside** pattern:
+
+- On read:
+  - The application first checks redis.
+  - If the data is present, it is returned immediately.
+  - If not, the data is fetched from PostgreSQL and stored in Redis with a TTL.
+
+- On write:
+  - Data is persisted synchronously to PostgreSQL.
+  - Related cache keys are invalidated to guarantee consistency.
+
+This approach keeps PostgreSQL as the sigle source of thruth while improving response times for frequent reads.
 
 ## Project setup
 

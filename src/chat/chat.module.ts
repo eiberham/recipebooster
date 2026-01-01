@@ -5,10 +5,12 @@ import { AgentUseCase } from './application/agent.usecase';
 import { RecipeRepositoryImpl } from 'src/recipes/infraestructure/prisma-recipe.repository';
 import { GetRecipeByNameUsecase } from 'src/recipes/application/get-recipe-by-name.usecase';
 import { JwtService } from '@nestjs/jwt';
+import { CacheService } from 'src/redis/redis.service';
 
 @Module({
     controllers: [ChatController],
     providers: [
+        CacheService,
         JwtService,
         PrismaService,
         {
