@@ -8,7 +8,7 @@ export class CacheService {
   ) {}
 
   async set(key: string, value: string) {
-    await this.redis.set(key, value);
+    await this.redis.set(key, value, 'EX', 9e2); // 15 minutes expiration
   }
 
   async get(key: string) {

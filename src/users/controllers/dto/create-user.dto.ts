@@ -1,5 +1,6 @@
 import { IsEmail, IsNotEmpty, IsArray, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import type { UserPreferences } from '../../domain/user.interface';
 
 export class CreateUserDto {
     @ApiProperty({ example: 'John Doe' })
@@ -17,6 +18,10 @@ export class CreateUserDto {
     @ApiProperty({ example: 'password' })
     @IsNotEmpty()
     password: string;
+
+    @ApiProperty({ example: '{ diet: "vegan", allergies: ["nuts"] }' })
+    @IsNotEmpty()
+    preferences?: UserPreferences;
 
     @IsArray()
     @IsString({ each: true })

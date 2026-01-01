@@ -18,7 +18,15 @@ export class UserRepositoryImpl implements UserRepository {
     if (cached) {
       return JSON.parse(cached);
     }
-    const users = await this.prisma.user.findMany({ omit: { password: true} });
+    const users = await this.prisma.user.findMany({
+      relationLoadStrategy: 'join', 
+      include: { 
+          userRoles: {
+            include: { role: true }
+          }
+      },
+      omit: { password: true} 
+    });
     await this.cache.set('users:all', JSON.stringify(users));
     return users;
   }
@@ -29,7 +37,13 @@ export class UserRepositoryImpl implements UserRepository {
       return JSON.parse(cached);
     }
     const user = await this.prisma.user.findUnique({
-      where: { id }
+      where: { id },
+      relationLoadStrategy: 'join', 
+      include: { 
+          userRoles: {
+            include: { role: true }
+          }
+      },
     });
     await this.cache.set(`user:${id}`, JSON.stringify(user));
     return user;
@@ -48,10 +62,11 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async create(data: CreateUserDto): Promise<UserResponseDto> {
-    const { name, email, username, password, roles } = data;
+    const { name, email, username, password, roles, preferences } = data;
     const user = await this.prisma.user.create({
       data: { 
         name, email, username, password,
+        ...(preferences && { preferences }),
         userRoles: {
           create: roles?.map(role => ({
             role: {
@@ -66,11 +81,12 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async update(id: number, data: UpdateUserDto ): Promise<UserResponseDto> {
-    const { name, email, username, password, roles } = data;
+    const { name, email, username, password, preferences, roles } = data;
     const user = await this.prisma.user.update({
       where: { id },
       data: {
         name, email, username, password,
+        ...(preferences && { preferences }),
         userRoles: roles ? {
           deleteMany: {},
           create: roles.map(role => ({

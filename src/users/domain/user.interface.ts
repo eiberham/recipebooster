@@ -3,6 +3,7 @@ export interface User {
     name: string;
     email: string;
     password: string;
+    preferences?: UserPreferences;
     createdAt: Date;
     updatedAt: Date;
     userRoles?: UserRole[];
@@ -12,6 +13,20 @@ interface UserRole {
     role: {
         name: string;
     }
+}
+
+const diet = {
+    none : 'none',
+    vegan: 'vegan',
+    vegetarian: 'vegetarian',
+    omnivore: 'omnivore'
+} as const
+
+type Diet = (typeof diet)[keyof typeof diet]
+
+export interface UserPreferences {
+    diet: Diet;
+    allergies: string[];
 }
 
 import type { CreateUserDto } from '../controllers/dto/create-user.dto';
