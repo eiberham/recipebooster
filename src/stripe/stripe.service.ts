@@ -1,13 +1,15 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import Stripe from 'stripe';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class StripeService {
     private stripe : Stripe
-    private logger = new Logger(StripeService.name);
+    private logger = new Logger(StripeService.name)
 
     constructor(
-        @Inject('STRIPE_API_KEY') private readonly apiKey: string
+        @Inject('STRIPE_API_KEY') private readonly apiKey: string,
+        private readonly configService: ConfigService
     ) {
 
         this.stripe = new Stripe(this.apiKey, {
@@ -18,18 +20,18 @@ export class StripeService {
                 version: "0.0.2",
             },
             typescript: true,
-        });
+        })
     }
 
     async getProducts(): Promise<Stripe.Product[]> {
         try {
             const products = await this.stripe.products.list({
                 limit: 10,
-            });
-            return products.data;
+            })
+            return products.data
         } catch (error) {
-            this.logger.error('Error fetching products from stripe', error);
-            throw error;
+            this.logger.error('Error fetching products from stripe', error)
+            throw error
         }
     }
 
@@ -37,11 +39,34 @@ export class StripeService {
         try {
             const customers = await this.stripe.customers.list({
                 limit: 10,
-            });
-            return customers.data;
+            })
+            return customers.data
         } catch (error) {
-            this.logger.error('Error fetching customers from stripe', error);
-            throw error;
+            this.logger.error('Error fetching customers from stripe', error)
+            throw error
+        }
+    }
+
+    async createSession(customerId: string, priceId: string): Promise<Stripe.Checkout.Session> {
+        try {
+            const appUrl = this.configService.get('APP_URL');
+            const session = await this.stripe.checkout.sessions.create({
+                mode: 'subscription',
+                payment_method_types: ['card'],
+                customer: customerId,
+                line_items: [
+                    {
+                        price: priceId,
+                        quantity: 1,
+                    },
+                ],
+                success_url: `${appUrl}/success`,
+                cancel_url: `${appUrl}/cancel`,
+            })
+            return session
+        } catch (error) {
+            this.logger.error('Error creating checkout session', error)
+            throw error
         }
     }
     
