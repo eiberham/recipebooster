@@ -33,6 +33,7 @@ import { PlanModule } from 'src/plan/plan.module';
             provide: 'USER_REPOSITORY',
             useClass: UserRepositoryImpl,
         }
-    ]
+    ],
+    exports: ['USER_REPOSITORY'],
 })
 export class UserModule{}

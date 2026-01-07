@@ -5,7 +5,6 @@ import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-
 import { UserModule } from './users/user.module';
 import { RecipeModule } from './recipes/recipe.module';
 import { IngredientModule } from './ingredients/ingredient.module';
@@ -15,6 +14,7 @@ import { ChatModule } from './chat/chat.module';
 import { RedisModule } from './redis/redis.module';
 import { StripeModule } from './stripe/stripe.module';
 import { PlanModule } from './plan/plan.module';
+import { CheckoutModule } from './checkout/checkout.module';
 
 @Module({
   imports: [
@@ -36,6 +36,7 @@ import { PlanModule } from './plan/plan.module';
     RabbitMQModule,
     ChatModule,
     PlanModule,
+    CheckoutModule
   ],
   controllers: [AppController],
   providers: [

@@ -47,6 +47,18 @@ export class StripeService {
         }
     }
 
+    async createCustomer(email: string): Promise<Stripe.Customer> {
+        try {
+            const customer = await this.stripe.customers.create({
+                email,
+            })
+            return customer
+        } catch (error) {
+            this.logger.error('Error creating customer in stripe', error)
+            throw error
+        }
+    }
+
     async createSession(customerId: string, priceId: string): Promise<Stripe.Checkout.Session> {
         try {
             const appUrl = this.configService.get('APP_URL');

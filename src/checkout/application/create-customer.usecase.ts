@@ -3,12 +3,12 @@ import { StripeService } from 'src/stripe/stripe.service';
 import { Stripe } from 'stripe';
 
 @Injectable()
-export class CreateCheckoutUsecase {
+export class CreateCustomerUsecase {
     constructor(
         private readonly stripeService: StripeService
     ) {}
 
-    async create(customerId: string, priceId: string): Promise<Stripe.Checkout.Session>{
-        return this.stripeService.createSession(customerId, priceId)
+    async create(email: string): Promise<Stripe.Customer>{
+        return this.stripeService.createCustomer(email)
     }
 }

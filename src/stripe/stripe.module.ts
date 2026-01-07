@@ -18,7 +18,7 @@ export class StripeModule{
                     inject: [ConfigService],
                 }
             ],
-            exports: [StripeService],
+            exports: [StripeService, 'STRIPE_API_KEY'],
         };
     }
 }
