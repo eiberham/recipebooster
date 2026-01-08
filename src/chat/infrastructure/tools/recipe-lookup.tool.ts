@@ -1,11 +1,11 @@
 import { tool } from "langchain";
-import { GetRecipeByNameUsecase } from "src/recipes/application/get-recipe-by-name.usecase";
+import { GetRecipeByUsecase } from "src/recipes/application/get-recipe-by.usecase";
 
 
-export function createRecipeLookupTool(getRecipeByNameUsecase: GetRecipeByNameUsecase) {
+export function createRecipeLookupTool(recipe: GetRecipeByUsecase) {
   return tool(
     async (input) => {
-      return await getRecipeByNameUsecase.getRecipeByName(input);
+      return await recipe.getRecipeBy({ name: input });
     },
     {
       name: "recipe_lookup",

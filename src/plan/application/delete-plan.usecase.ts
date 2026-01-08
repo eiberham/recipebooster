@@ -5,10 +5,10 @@ import type { PlanRepository } from '../domain/plan.interface';
 export class DeletePlanUsecase {
     constructor(
         @Inject('PLAN_REPOSITORY') 
-        private readonly planRepository: PlanRepository
+        private readonly plan: PlanRepository
     ) {}
 
     async deletePlan(id: number): Promise<void> {
-        return this.planRepository.delete(id)
+        return this.plan.delete(id)
     }
 }

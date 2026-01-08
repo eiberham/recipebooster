@@ -1,16 +1,17 @@
 import bcrypt from 'bcrypt';
 import { Injectable, Inject } from '@nestjs/common';
 import type { UserRepository } from '../domain/user.interface';
-import type { UserResponseDto } from '../controllers/dto/user-response.dto';
-import { CreateUserDto } from '../controllers/dto/create-user.dto';
-import { RabbitMQProducer } from '../../rabbitmq/rabbitmq.producer';
+import { UserResponseData } from '../domain/user.interface';
+import { CreateUserData } from '../domain/user.interface';
+import type { NotificationService } from '../domain/notification.interface';
 
 @Injectable()
 export class CreateUserUsecase{
     constructor(
         @Inject('USER_REPOSITORY') 
-        private readonly userRepository: UserRepository,
-        private readonly rabbitMQProducer: RabbitMQProducer
+        private readonly user: UserRepository,
+        @Inject('NOTIFICATION_SERVICE')
+        private notification: NotificationService,
     ) {}
 
     async hashPassword(password: string): Promise<string> {
@@ -19,8 +20,8 @@ export class CreateUserUsecase{
         return password;
     }
 
-    async createUser( data : CreateUserDto ): Promise<UserResponseDto> {
-        let user: UserResponseDto | null = null;
+    async createUser( data : CreateUserData ): Promise<UserResponseData> {
+        let user: UserResponseData | null = null;
         try {
             const hashed = await this.hashPassword(data.password);
 
@@ -29,17 +30,16 @@ export class CreateUserUsecase{
                 password: hashed
             }
 
-            user = await this.userRepository.create(payload);
+            user = await this.user.create(payload);
 
-            await this.rabbitMQProducer.sendToQueue('email_queue', {
-                id: user.id,
-                email: user.email,
-                name: user.name,
-                subject: 'Welcome to superchef!',
-                body: `
-                    Thank you for registering at superchef. 
-                    We are excited to have you on board! `
-            });
+            await this.notification.send(
+                user, 
+                'Welcome to superchef!', 
+                `
+                Thank you for registering at superchef. 
+                We are excited to have you on board! 
+                `
+            );
 
             return user;
         } catch (error) {

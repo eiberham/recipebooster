@@ -1,9 +1,9 @@
 import { TestBed, type Mocked } from '@suites/unit';
-import { GetRecipeByNameUsecase } from '../get-recipe-by-name.usecase';
+import { GetRecipeByUsecase } from '../get-recipe-by.usecase';
 import type { RecipeRepository } from '../../domain/recipe.interface';
 
-describe('GetRecipeByNameUseCase', () => {
-    let getRecipeByNameUseCase: GetRecipeByNameUsecase;
+describe('GetRecipeByUseCase', () => {
+    let getRecipeByUseCase: GetRecipeByUsecase;
     let recipeRepository: Mocked<RecipeRepository>;
     
     beforeAll(async () => {
@@ -11,12 +11,12 @@ describe('GetRecipeByNameUseCase', () => {
             findByName: jest.fn()
         };
 
-        const { unit } = await TestBed.solitary(GetRecipeByNameUsecase)
+        const { unit } = await TestBed.solitary(GetRecipeByUsecase)
             .mock('RECIPE_REPOSITORY')
             .final(mockRepo)
             .compile();
         
-        getRecipeByNameUseCase = unit;
+        getRecipeByUseCase = unit;
         recipeRepository = mockRepo as Mocked<RecipeRepository>;
     });
 
@@ -30,11 +30,11 @@ describe('GetRecipeByNameUseCase', () => {
             createdAt: new Date(),
             updatedAt: new Date()
         };
-        recipeRepository.findByName.mockResolvedValue(recipe);
+        recipeRepository.findBy.mockResolvedValue(recipe);
 
-        const result = await getRecipeByNameUseCase.getRecipeByName(recipe.name);
+        const result = await getRecipeByUseCase.getRecipeBy({ name: recipe.name });
 
-        expect(recipeRepository.findByName).toHaveBeenCalledWith(recipe.name);
+        expect(recipeRepository.findBy).toHaveBeenCalledWith({ name: recipe.name });
         expect(result).toEqual(recipe);
     });
 })

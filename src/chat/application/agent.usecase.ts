@@ -1,19 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { createAgent } from "langchain";
 import { InMemoryStore } from "@langchain/langgraph";
-import { GetRecipeByNameUsecase } from '../../recipes/application/get-recipe-by-name.usecase';
-import { createRecipeLookupTool } from '../infraestructure/tools/recipe-lookup.tool';
+import { GetRecipeByUsecase } from '../../recipes/application/get-recipe-by.usecase';
+import { createRecipeLookupTool } from '../infrastructure/tools/recipe-lookup.tool';
 
 @Injectable()
 export class AgentUseCase {
     agent: any;
 
     constructor(
-        private readonly getRecipeByNameUsecase: GetRecipeByNameUsecase
+        private readonly recipe: GetRecipeByUsecase
     ){
         this.agent = createAgent({
             model: "openai:gpt-4o",
-            tools: [createRecipeLookupTool(this.getRecipeByNameUsecase)],
+            tools: [createRecipeLookupTool(this.recipe)],
             store: new InMemoryStore(),
             systemPrompt: `
                 You are a helpful chef assistant. Be concise and accurate.

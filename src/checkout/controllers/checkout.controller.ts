@@ -7,7 +7,9 @@ import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { CreateSessionUsecase } from '../application/create-session.usecase';
 import { CreateCustomerUsecase } from '../application/create-customer.usecase';
 import { CreateBillingDto } from './dto/create-billing.dto';
-import { GetUserByEmailUsecase } from 'src/users/application/get-user-by-email.usecase';
+import { GetUserByUsecase } from 'src/users/application/get-user-by.usecase';
+import { UpdateUserUsecase } from 'src/users/application/update-user.usecase';
+import { UserNotFoundException } from 'src/common/exceptions/user-not-found.exception';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard, RolesGuard)
@@ -15,9 +17,10 @@ import { GetUserByEmailUsecase } from 'src/users/application/get-user-by-email.u
 export class CheckoutController {
 
     constructor(
-        private readonly createCustomerUsecase: CreateCustomerUsecase,
-        private readonly createSessionUsecase: CreateSessionUsecase,
-        private readonly getUserByEmailUsecase: GetUserByEmailUsecase
+        private readonly stripeCustomer: CreateCustomerUsecase,
+        private readonly stripeSession: CreateSessionUsecase,
+        private readonly getUserByUsecase: GetUserByUsecase,
+        private readonly updateUserUsecase: UpdateUserUsecase
     ){}
 
     @Post('billing')
@@ -25,22 +28,37 @@ export class CheckoutController {
     @Roles(Role.ADMIN, Role.VIEWER)
     @ApiBody({ type: CreateBillingDto })
     async billing(@Req() request: Request, @Body(ValidationPipe) body: CreateBillingDto): Promise<string | null> {
-        const { user } = request as any
-        const { email } = user
-        const { priceId } = body
-        const userResult = await this.getUserByEmailUsecase.getUserByEmail(email)
-        const stripeCustomerId = userResult && 'stripeCustomerId' in userResult ? userResult.stripeCustomerId : null
-        let customerId: string
+        try {
+            const { authenticated } = request as any
+            const { email } = authenticated
+            const { priceId } = body
 
-        if (stripeCustomerId) {
-            customerId = stripeCustomerId
-        } else {
-            const customer = await this.createCustomerUsecase.create(email)
-            customerId = customer.id
+            const user = await this.getUserByUsecase.findBy({ email });
+            if (!user) {
+                throw new UserNotFoundException()
+            }
+
+            const stripeCustomerId = user && 'stripeCustomerId' in user ? user.stripeCustomerId : null
+            let customerId: string
+
+            if (stripeCustomerId) {
+                customerId = stripeCustomerId
+            } else {
+                const customer = await this.stripeCustomer.create(email)
+                customerId = customer.id
+
+                await this.updateUserUsecase.updateUser(user.id, {
+                    ...user,
+                    stripeCustomerId: customerId
+                })
+            }
+
+            // price_1SkwdzBc2oUNTGy2w1nInsn9
+            const session = await this.stripeSession.create(customerId, priceId)
+            return session.url
+        } catch (error) {
+            console.error('Error in billing endpoint:', error)
+            throw error
         }
-
-        // price_1SkwdzBc2oUNTGy2w1nInsn9
-        const { url } = await this.createSessionUsecase.create(customerId, priceId)
-        return url
     }
 }

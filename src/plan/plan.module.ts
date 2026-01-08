@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { PlanController } from './controllers/plan.controller';
-import { GetPlanByNameUsecase } from './application/get-plan-by-name.usecase';
-import { GetPlanUsecase } from './application/get-plan.usecase';
+import { GetPlanByUsecase } from './application/get-plan-by.usecase';
 import { GetPlansUsecase } from './application/get-plans.usecase';
 import { DeletePlanUsecase } from './application/delete-plan.usecase';
 import { UpdatePlanUsecase } from './application/update-plan.usecase';
@@ -19,8 +18,7 @@ import { JwtService } from '@nestjs/jwt';
         useClass: PrismaPlanRepository
     },
     GetPlansUsecase,
-    GetPlanUsecase,
-    GetPlanByNameUsecase,
+    GetPlanByUsecase,
     CreatePlanUsecase,
     UpdatePlanUsecase,
     DeletePlanUsecase,

@@ -5,13 +5,15 @@ import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { Role } from 'src/auth/domain/role.enum';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-import { GetPlanUsecase } from '../application/get-plan.usecase';
+import { GetPlanByUsecase } from '../application/get-plan-by.usecase';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
 import { CreatePlanUsecase } from '../application/create-plan.usecase';
 import { PlanResponseDto } from './dto/plan-response.dto';
 import { UpdatePlanUsecase } from '../application/update-plan.usecase';
 import { DeletePlanUsecase } from '../application/delete-plan.usecase';
+import { UseInterceptors } from '@nestjs/common';
+import { CacheInterceptor, CacheTTL, CacheKey } from '@nestjs/cache-manager';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard, RolesGuard)
@@ -20,7 +22,7 @@ export class PlanController {
 
   constructor(
     private readonly getPlansUsecase: GetPlansUsecase,
-    private readonly getPlanUsecase: GetPlanUsecase,
+    private readonly getPlanByUsecase: GetPlanByUsecase,
     private readonly createPlanUsecase: CreatePlanUsecase,
     private readonly updatePlanUsecase: UpdatePlanUsecase,
     private readonly deletePlanUsecase: DeletePlanUsecase
@@ -28,6 +30,9 @@ export class PlanController {
 
   @HttpCode(HttpStatus.OK)
   @Roles(Role.ADMIN)
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
+  @CacheKey('plans:all')
   @Get()
   async getPlans(): Promise<PlanResponseDto[]> {
     return this.getPlansUsecase.getPlans()
@@ -35,9 +40,11 @@ export class PlanController {
 
   @HttpCode(HttpStatus.OK)
   @Roles(Role.ADMIN)
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   @Get(':id')
   async getPlanById(@Param('id', ParseIntPipe) id: number): Promise<PlanResponseDto | null> {
-    return this.getPlanUsecase.getPlan(id)
+    return this.getPlanByUsecase.findBy({id})
   }
 
   @HttpCode(HttpStatus.CREATED)

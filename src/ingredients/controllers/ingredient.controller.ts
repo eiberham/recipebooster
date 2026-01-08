@@ -13,6 +13,8 @@ import { Role } from 'src/auth/domain/role.enum';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { UseInterceptors } from '@nestjs/common';
+import { CacheInterceptor, CacheTTL, CacheKey } from '@nestjs/cache-manager';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard, RolesGuard)
@@ -28,6 +30,9 @@ export class IngredientController {
 
     @HttpCode(HttpStatus.OK)
     @Roles(Role.ADMIN, Role.VIEWER)
+    @UseInterceptors(CacheInterceptor)
+    @CacheTTL(30)
+    @CacheKey('ingredients:all')
     @Get()
     async findAll(@Req() request: Request): Promise<IngredientResponseDto[]> {
         return this.listIngredients.findAll();
@@ -35,6 +40,8 @@ export class IngredientController {
 
     @HttpCode(HttpStatus.OK)
     @Roles(Role.ADMIN, Role.VIEWER)
+    @UseInterceptors(CacheInterceptor)
+    @CacheTTL(30)
     @Get(':id')
     async findById(@Req() request: Request, @Param('id', ParseIntPipe) id: number) : Promise<IngredientResponseDto | null> {
         return this.getIngredient.findById(id)

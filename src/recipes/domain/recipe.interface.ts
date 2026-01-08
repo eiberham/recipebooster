@@ -1,23 +1,30 @@
-import type { RecipeResponseDto } from '../controllers/dto/recipe-response.dto'
-import type { CreateRecipeDto } from '../controllers/dto/create-recipe.dto'
-import type { UpdateRecipeDto } from '../controllers/dto/update-recipe.dto'
+import { Prisma } from "generated/prisma/edge";
 
 export interface Recipe {
     id: number;
     name: string;
-    description: string | null;
+    description: string;
     steps: string;
-    imageUrl: string;
+    imageUrl: string | null;
     userId: number;
     createdAt: Date;
-    updatedAt: Date;
+    updatedAt: Date | null;
+    ingredients?: RecipeIngredient[];
 }
 
+type RecipeIngredient = {
+    ingredientId: number;
+    quantity: number | null;
+    unit: string | null;
+}
+
+export type CreateRecipeData = Omit<Recipe, 'id' | 'createdAt' | 'updatedAt'>;
+export type UpdateRecipeData = Partial<Omit<Recipe, 'id' | 'createdAt' | 'updatedAt'>>;
+
 export interface RecipeRepository {
-    findAll(): Promise<RecipeResponseDto[]>;
-    findById(id: number): Promise<RecipeResponseDto | null>;
-    findByName(name: string): Promise<RecipeResponseDto | null>;
-    create(recipe: CreateRecipeDto): Promise<RecipeResponseDto>;
-    update(id: number, recipe: UpdateRecipeDto): Promise<RecipeResponseDto>;
-    delete(id: number): Promise<RecipeResponseDto>;
+    findAll(): Promise<Recipe[]>;
+    findBy<T extends Prisma.RecipeWhereInput>(query : T): Promise<Recipe | null>;
+    create(recipe: CreateRecipeData): Promise<Recipe>;
+    update(id: number, recipe: UpdateRecipeData): Promise<Recipe>;
+    delete(id: number): Promise<Recipe>;
 }

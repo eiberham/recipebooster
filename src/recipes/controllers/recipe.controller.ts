@@ -2,7 +2,7 @@ import { Controller, ParseIntPipe, ValidationPipe, Get, Req, Param, Body, Post, 
 import { ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { CreateRecipeUsecase } from '../application/create-recipe.usecase';
 import { UpdateRecipeUsecase } from '../application/update-recipe.usecase';
-import { GetRecipeUsecase } from '../application/get-recipe.usecase';
+import { GetRecipeByUsecase } from '../application/get-recipe-by.usecase';
 import { DeleteRecipeUsecase } from '../application/delete-recipe.usecase';
 import { ListRecipesUsecase } from '../application/list-recipes.usecase';
 import type { Request } from 'express';
@@ -13,6 +13,8 @@ import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { Role } from 'src/auth/domain/role.enum';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { UseInterceptors } from '@nestjs/common';
+import { CacheInterceptor, CacheTTL, CacheKey } from '@nestjs/cache-manager';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard, RolesGuard)
@@ -21,13 +23,16 @@ export class RecipeController {
     constructor(
         private readonly createRecipeUsecase: CreateRecipeUsecase,
         private readonly updateRecipeUsecase: UpdateRecipeUsecase,
-        private readonly getRecipeUsecase: GetRecipeUsecase,
+        private readonly getRecipeByUsecase: GetRecipeByUsecase,
         private readonly deleteRecipeUsecase: DeleteRecipeUsecase,
         private readonly listRecipesUsecase: ListRecipesUsecase
     ) {}
 
     @HttpCode(HttpStatus.OK)
     @Roles(Role.ADMIN, Role.VIEWER)
+    @UseInterceptors(CacheInterceptor)
+    @CacheTTL(30)
+    @CacheKey('recipes:all')
     @Get()
     async getRecipes( @Req() req: Request ): Promise<RecipeResponseDto[]> {
         return this.listRecipesUsecase.getRecipes();
@@ -35,9 +40,11 @@ export class RecipeController {
     
     @HttpCode(HttpStatus.OK)
     @Roles(Role.ADMIN, Role.VIEWER)
+    @UseInterceptors(CacheInterceptor)
+    @CacheTTL(30)
     @Get(':id')
     async getRecipeById( @Req() req: Request, @Param('id', ParseIntPipe) id: number ): Promise<RecipeResponseDto | null> {
-        return this.getRecipeUsecase.getRecipeById(id);
+        return this.getRecipeByUsecase.getRecipeBy({id});
     }
 
     @HttpCode(HttpStatus.CREATED)

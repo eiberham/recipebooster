@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import type { UserRepository } from '../domain/user.interface';
-import type { UserResponseDto } from '../controllers/dto/user-response.dto';
+import { UserResponseData } from '../domain/user.interface';
 
 @Injectable()
 export class ListUsersUsecase{
@@ -9,7 +9,7 @@ export class ListUsersUsecase{
         private readonly userRepository: UserRepository
     ) {}
 
-    async getUsers(): Promise<UserResponseDto[]> {
+    async getUsers(): Promise<UserResponseData[]> {
         return this.userRepository.findAll()
     }
 }

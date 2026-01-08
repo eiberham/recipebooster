@@ -5,8 +5,8 @@ export class RecipeIngredient {
     ingredientId: number;
 
     @IsNumber()
-    quantity: number;
+    quantity: number | null;
 
     @IsString()
-    unit: string;
+    unit: string | null;
 }

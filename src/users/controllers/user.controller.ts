@@ -4,7 +4,7 @@ import type { Request } from 'express';
 import { CreateUserUsecase } from '../application/create-user.usecase';
 import { UpdateUserUsecase } from '../application/update-user.usecase';
 import { ListUsersUsecase } from '../application/list-users.usecase';
-import { GetUserUsecase } from '../application/get-user.usecase';
+import { GetUserByUsecase } from '../application/get-user-by.usecase';
 import { DeleteUserUsecase } from '../application/delete-user.usecase';
 import { UserResponseDto } from './dto/user-response.dto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -13,6 +13,8 @@ import { Role } from 'src/auth/domain/role.enum';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { UseInterceptors } from '@nestjs/common';
+import { CacheInterceptor, CacheTTL, CacheKey } from '@nestjs/cache-manager';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard, RolesGuard)
@@ -22,12 +24,15 @@ export class UserController {
         private readonly createUserUsecase: CreateUserUsecase,
         private readonly updateUserUsecase: UpdateUserUsecase,
         private readonly listUsersUsecase: ListUsersUsecase,
-        private readonly getUserUsecase: GetUserUsecase,
+        private readonly getUserByUsecase: GetUserByUsecase,
         private readonly deleteUserUsecase: DeleteUserUsecase
     ) {}
 
     @HttpCode(HttpStatus.OK)
     @Roles(Role.ADMIN)
+    @UseInterceptors(CacheInterceptor)
+    @CacheTTL(30)
+    @CacheKey('users:all')
     @Get()
     async getUsers(@Req() request: Request): Promise<UserResponseDto[]> {
         return this.listUsersUsecase.getUsers();
@@ -35,9 +40,11 @@ export class UserController {
 
     @HttpCode(HttpStatus.OK)
     @Roles(Role.ADMIN)
+    @UseInterceptors(CacheInterceptor)
+    @CacheTTL(30)
     @Get(':id')
     async getUserById(@Req() request: Request, @Param('id', ParseIntPipe) id: number): Promise<UserResponseDto | null> {
-        return this.getUserUsecase.getUserById(id);
+        return this.getUserByUsecase.findBy({id});
     }
 
     @HttpCode(HttpStatus.CREATED)

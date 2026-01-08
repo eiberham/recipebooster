@@ -1,29 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import type { Plan, PlanRepository } from '../domain/plan.interface';
+import { CreatePlanData, UpdatePlanData, Plan, PlanRepository } from '../domain/plan.interface';
 import { PrismaService } from '../../prisma/prisma.service';
-import { PlanResponseDto } from '../controllers/dto/plan-response.dto';
-import { CacheService } from 'src/redis/redis.service';
-import { CreatePlanDto } from '../controllers/dto/create-plan.dto';
-import { UpdatePlanDto } from '../controllers/dto/update-plan.dto';
+import { Prisma } from 'generated/prisma/edge';
 
 @Injectable()
 export class PrismaPlanRepository implements PlanRepository {
     constructor(
-        private readonly prisma: PrismaService,
-        private readonly cache: CacheService
+        private readonly prisma: PrismaService
     ) {}
 
-    async findAll(): Promise<PlanResponseDto[]> {
-        const cached = await this.cache.get('plans:all')
-        if (cached) {
-            return JSON.parse(cached)
-        }
-        const plans = await this.prisma.plan.findMany()
-        await this.cache.set('plans:all', JSON.stringify(plans))
-        return plans
+    async findAll(): Promise<Plan[]> {
+        return this.prisma.plan.findMany()
     }
 
-    async findById(id: number): Promise<PlanResponseDto | null> {
+    async findById(id: number): Promise<Plan | null> {
         const plan = await this.prisma.plan.findUnique({
             where: { id },
         })
@@ -47,34 +37,34 @@ export class PrismaPlanRepository implements PlanRepository {
         return plan
     }
 
-    async create( data: CreatePlanDto ): Promise<PlanResponseDto> {
-        const plan = await this.prisma.plan.create({
-            data,
+    async findBy<T extends Prisma.PlanWhereInput>(query : T): Promise<Plan | null> {
+        const plan = await this.prisma.plan.findFirst({
+            where: query,
         })
 
-        await this.cache.del('plans:all')
+        if (!plan) {
+            return null
+        }
 
         return plan
     }
 
-    async update( id: number, data: UpdatePlanDto ): Promise<PlanResponseDto> {
-        const plan =  await this.prisma.plan.update({
+    async create( data: CreatePlanData ): Promise<Plan> {
+        return this.prisma.plan.create({
+            data,
+        })
+    }
+
+    async update( id: number, data: UpdatePlanData ): Promise<Plan> {
+        return this.prisma.plan.update({
             where: { id },
             data,
         })
-
-        await this.cache.del('plans:all')
-        await this.cache.del(`plan:${id}`)
-
-        return plan
     }
 
     async delete( id: number ): Promise<void> {
         await this.prisma.plan.delete({
             where: { id },
         })
-
-        await this.cache.del('plans:all')
-        await this.cache.del(`plan:${id}`)
     }
 }

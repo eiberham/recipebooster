@@ -199,6 +199,23 @@ The assistant is implemented as a backend agent powered by OpenAI and orchestrat
 
 All suggestions are generated in the context of a real recipe stored in the database.
 
+## Stripe Integration
+
+Superchef integrates with Stripe for subscription management, allowing users to subscribe to a basic plan and access enhanced features.
+
+#### Features
+
+- Checkout Session Creation: Create Stripe Checkout sessions for subscription purchases
+- Webhook Processing: Handle Stripe webhook events (checkout.session.completed)
+- Subscription Management: Automatically update subscription status and billing periods
+- Customer Management: Create and manage Stripe customers linked to user accounts
+
+#### Supported Webhook Events
+
+| Event                        | Description                     | Action                                                       |
+| ---------------------------- | ------------------------------- | ------------------------------------------------------------ |
+| `checkout.session.completed` | Checkout completed successfully | Updates subscription status, billing period, and user access |
+
 ## Project setup
 
 ```bash

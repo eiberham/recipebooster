@@ -4,8 +4,8 @@ import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from '../users/user.module';
-import { GetUserByEmailUsecase } from '../users/application/get-user-by-email.usecase';
-import { UserRepositoryImpl } from '../users/infraestructure/prisma-user.repository';
+import { GetUserByUsecase } from '../users/application/get-user-by.usecase';
+import { UserRepositoryImpl } from '../users/infrastructure/prisma-user.repository';
 import { PrismaService } from '../prisma/prisma.service';
 import { CacheService } from 'src/redis/redis.service';
 
@@ -24,7 +24,7 @@ import { CacheService } from 'src/redis/redis.service';
   controllers: [AuthController],
   providers: [
     CacheService,
-    GetUserByEmailUsecase,
+    GetUserByUsecase,
     PrismaService,
     {
       provide: 'USER_REPOSITORY',

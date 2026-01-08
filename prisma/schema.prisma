@@ -23,7 +23,7 @@ model User {
   password         String
   stripeCustomerId String        @map("stripe_customer_id") @default("")
   createdAt        DateTime      @default(now()) @map("created_at")
-  updatedAt        DateTime      @default(now()) @map("updated_at")
+  updatedAt        DateTime?     @default(now()) @map("updated_at")
   preferences      Json          @default("{}")
   recipes          Recipe[] // A user can have multiple recipes
   roles            UserRole[] // A user can have multiple roles through UserRole
@@ -35,12 +35,12 @@ model User {
 model Recipe {
   id          Int                @id @default(autoincrement())
   name        String
-  description String?
+  description String
   steps       String
-  imageUrl    String             @map("image_url")
+  imageUrl    String?            @map("image_url")
   userId      Int                @map("user_id")
   createdAt   DateTime           @default(now()) @map("created_at")
-  updatedAt   DateTime           @default(now()) @map("updated_at")
+  updatedAt   DateTime          @default(now()) @map("updated_at")
   user        User               @relation(fields: [userId], references: [id]) // Many recipes belong to one user
   ingredients RecipeIngredient[] // A recipe can have multiple ingredients through RecipeIngredient
 
@@ -59,8 +59,8 @@ model RecipeIngredient {
   id           Int        @id @default(autoincrement())
   recipeId     Int        @map("recipe_id")
   ingredientId Int        @map("ingredient_id")
-  quantity     Int
-  unit         String
+  quantity     Int?
+  unit         String?
   recipe       Recipe     @relation(fields: [recipeId], references: [id])
   ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
 
@@ -91,7 +91,7 @@ model Plan {
   price         Int
   currency      String
   stripePriceId String?        @map("stripe_price_id")
-  features      Json
+  features      Json?
   createdAt     DateTime       @default(now()) @map("created_at")
   subscriptions Subscription[]
 
@@ -103,12 +103,13 @@ model Subscription {
   userId Int @unique @map("user_id")
   planId Int @map("plan_id")
 
-  status               String
-  stripeSubscriptionId String   @map("stripe_subscription_id")
-  currentPeriodEnd     DateTime @map("current_period_end")
+  status               String?
+  stripeSubscriptionId String?   @map("stripe_subscription_id")
+  currentPeriodEnd     DateTime? @map("current_period_end")
 
   createdAt  DateTime  @default(now()) @map("created_at")
   canceledAt DateTime? @map("canceled_at")
+  interval   String?   // 'month' or 'year'
   user       User      @relation(fields: [userId], references: [id])
   plan       Plan      @relation(fields: [planId], references: [id])
 

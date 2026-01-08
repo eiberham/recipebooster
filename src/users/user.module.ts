@@ -3,9 +3,10 @@ import { UserController } from './controllers/user.controller';
 import { CreateUserUsecase } from './application/create-user.usecase';
 import { UpdateUserUsecase } from './application/update-user.usecase';
 import { ListUsersUsecase } from './application/list-users.usecase';
-import { GetUserUsecase } from './application/get-user.usecase';
 import { DeleteUserUsecase } from './application/delete-user.usecase';
-import { UserRepositoryImpl } from './infraestructure/prisma-user.repository';
+import { GetUserByUsecase } from './application/get-user-by.usecase';
+import { UserRepositoryImpl } from './infrastructure/prisma-user.repository';
+import { RabbitMQNotificationService } from './infrastructure/rabbitmq-notification.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { RabbitMQProducer } from 'src/rabbitmq/rabbitmq.producer';
 import { RabbitMQService } from 'src/rabbitmq/rabbitmq.service';
@@ -16,15 +17,15 @@ import { PlanModule } from 'src/plan/plan.module';
 
 @Module({
     controllers: [UserController],
+    imports: [PlanModule],
     providers: [
-        PlanModule,
         CacheService,
         JwtService,
         CreateUserUsecase,
         UpdateUserUsecase,
         ListUsersUsecase,
-        GetUserUsecase,
         DeleteUserUsecase,
+        GetUserByUsecase,
         PrismaService,
         RabbitMQProducer,
         RabbitMQService,
@@ -32,6 +33,10 @@ import { PlanModule } from 'src/plan/plan.module';
         {
             provide: 'USER_REPOSITORY',
             useClass: UserRepositoryImpl,
+        },
+        {
+            provide: 'NOTIFICATION_SERVICE',
+            useClass: RabbitMQNotificationService,
         }
     ],
     exports: ['USER_REPOSITORY'],

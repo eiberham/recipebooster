@@ -1,0 +1,32 @@
+{
+  "_meta": {
+    "template_version": 0
+  },
+  "id": "evt_test_webhook",
+  "object": "event",
+  "type": "checkout.session.completed",
+  "data": {
+    "object": {
+      "id": "cs_test_a1re3o54NfaX6YgJPNR6Xjk5A9KgyKQdY4cdhSSXnFJ9p4VyRdSNoTj5jT",
+      "mode": "subscription",
+      "customer": "cus_test_123",
+      "subscription": "sub_test_123",
+      "metadata": {
+        "userId": "1"
+      },
+      "line_items": {
+        "data": [
+          {
+            "price": {
+              "type": "recurring",
+              "recurring": {
+                "interval": "month",
+                "interval_count": 1
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

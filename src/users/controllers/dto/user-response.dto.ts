@@ -10,5 +10,5 @@ export class UserResponseDto {
     roles?: string[];
     subscription?: Subscription;
     createdAt: Date;
-    updatedAt: Date;
+    updatedAt: Date | null;
 }

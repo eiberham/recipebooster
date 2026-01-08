@@ -1,16 +1,31 @@
 import { Module, DynamicModule } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { StripeService } from './stripe.service';
-import { StripeController } from './stripe.controller';
+import { StripeController } from './controller/stripe.controller';
+import { HandleCheckoutUsecase } from './application/handle-checkout.usecase';
+import { GetSubscriptionByUsecase } from '@/subscriptions/application/get-subscription-by.usecase';
+import { UpdateSubscriptionUsecase } from '@/subscriptions/application/update-subscription.usecase';
+import { UpdateUserUsecase } from '@/users/application/update-user.usecase';
+import { GetUserByUsecase } from '@/users/application/get-user-by.usecase';
+import { SubscriptionModule } from '@/subscriptions/subscription.module';
+import { UserModule } from '@/users/user.module';
+import { GetPlanByUsecase } from '@/plan/application/get-plan-by.usecase';
+import { PlanModule } from '@/plan/plan.module';
 
 @Module({})
-export class StripeModule{
+export class StripeModule {
     static forRootAsync(): DynamicModule {
         return {
             module: StripeModule,
-            imports: [],
+            imports: [SubscriptionModule, UserModule, PlanModule],
             controllers: [StripeController],
             providers: [
+                GetSubscriptionByUsecase,
+                GetUserByUsecase,
+                UpdateSubscriptionUsecase,
+                UpdateUserUsecase,
+                HandleCheckoutUsecase,
+                GetPlanByUsecase,
                 StripeService,
                 {
                     provide: 'STRIPE_API_KEY',

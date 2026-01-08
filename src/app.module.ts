@@ -15,9 +15,11 @@ import { RedisModule } from './redis/redis.module';
 import { StripeModule } from './stripe/stripe.module';
 import { PlanModule } from './plan/plan.module';
 import { CheckoutModule } from './checkout/checkout.module';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
+    CacheModule.register({ isGlobal: true }),
     StripeModule.forRootAsync(),
     ConfigModule.forRoot({ isGlobal: true }),
     RedisModule,

@@ -3,10 +3,9 @@ import { RecipeController } from './controllers/recipe.controller';
 import { CreateRecipeUsecase } from './application/create-recipe.usecase';
 import { ListRecipesUsecase } from './application/list-recipes.usecase';
 import { DeleteRecipeUsecase } from './application/delete-recipe.usecase';
-import { GetRecipeUsecase } from './application/get-recipe.usecase';
-import { GetRecipeByNameUsecase } from './application/get-recipe-by-name.usecase';
+import { GetRecipeByUsecase } from './application/get-recipe-by.usecase';
 import { UpdateRecipeUsecase } from './application/update-recipe.usecase';
-import { RecipeRepositoryImpl } from './infraestructure/prisma-recipe.repository';
+import { RecipeRepositoryImpl } from './infrastructure/prisma-recipe.repository';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { CacheService } from 'src/redis/redis.service';
@@ -19,8 +18,7 @@ import { CacheService } from 'src/redis/redis.service';
         JwtService,
         CreateRecipeUsecase,
         UpdateRecipeUsecase,
-        GetRecipeUsecase,
-        GetRecipeByNameUsecase,
+        GetRecipeByUsecase,
         DeleteRecipeUsecase,
         ListRecipesUsecase,
         PrismaService,

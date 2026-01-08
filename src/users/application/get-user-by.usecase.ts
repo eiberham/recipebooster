@@ -1,17 +1,18 @@
 import { Injectable, Inject } from '@nestjs/common';
 import type { UserRepository } from '../domain/user.interface';
-import type { UserResponseDto } from '../controllers/dto/user-response.dto';
 import { UserNotFoundException } from '../../common/exceptions/user-not-found.exception';
+import { User } from '../domain/user.interface';
+import { Prisma } from 'generated/prisma/edge';
 
 @Injectable()
-export class GetUserUsecase{
+export class GetUserByUsecase{
     constructor(
         @Inject('USER_REPOSITORY') 
-        private readonly userRepository: UserRepository
+        private readonly user: UserRepository
     ) {}
 
-    async getUserById(id: number): Promise<UserResponseDto | null> {
-        const user = await this.userRepository.findById(id);
+    async findBy<T extends Prisma.UserWhereInput>(query: T): Promise<User | null> {
+        const user = await this.user.findBy(query);
         if (!user) {
             throw new UserNotFoundException();
         }

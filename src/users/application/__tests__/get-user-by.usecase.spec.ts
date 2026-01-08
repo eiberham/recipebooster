@@ -1,23 +1,23 @@
 import { TestBed, type Mocked } from '@suites/unit';
-import { GetUserByEmailUsecase } from '../get-user-by-email.usecase';
+import { GetUserByUsecase } from '../get-user-by.usecase';
 import type { UserRepository } from 'src/users/domain/user.interface';
 
 
-describe('GetUserByEmailUseCase', () => {
-    let getUserByEmailUsecase: GetUserByEmailUsecase;
+describe('GetUserByUseCase', () => {
+    let getUserByUsecase: GetUserByUsecase;
     let userRepository: Mocked<UserRepository>;
     
     beforeAll(async () => {
         const mockRepo = {
-            findByEmail: jest.fn(),
+            findBy: jest.fn(),
         };
 
-        const { unit } = await TestBed.solitary(GetUserByEmailUsecase)
+        const { unit } = await TestBed.solitary(GetUserByUsecase)
             .mock('USER_REPOSITORY')
             .final(mockRepo)
             .compile();
         
-        getUserByEmailUsecase = unit;
+        getUserByUsecase = unit;
         userRepository = mockRepo as Mocked<UserRepository>;
     });
 
@@ -34,9 +34,9 @@ describe('GetUserByEmailUseCase', () => {
 
         userRepository.findByEmail.mockResolvedValue(user);
 
-        const result = await getUserByEmailUsecase.getUserByEmail(user.email);
+        const result = await getUserByUsecase.findBy({ email: user.email });
 
-        expect(userRepository.findByEmail).toHaveBeenCalledWith('john.doe@example.com');
+        expect(userRepository.findBy).toHaveBeenCalledWith({ email: 'john.doe@example.com' });
         expect(result).toEqual(user);
     });
 })
