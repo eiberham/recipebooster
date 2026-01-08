@@ -5,7 +5,7 @@ import { UpdateUserUsecase } from './application/update-user.usecase';
 import { ListUsersUsecase } from './application/list-users.usecase';
 import { GetUserUsecase } from './application/get-user.usecase';
 import { DeleteUserUsecase } from './application/delete-user.usecase';
-import { UserRepositoryImpl } from './infraestructure/prisma-user.repository';
+import { UserRepositoryImpl } from './infrastructure/prisma-user.repository';
 import { PrismaService } from '../prisma/prisma.service';
 import { RabbitMQProducer } from 'src/rabbitmq/rabbitmq.producer';
 import { RabbitMQService } from 'src/rabbitmq/rabbitmq.service';
@@ -16,8 +16,8 @@ import { PlanModule } from 'src/plan/plan.module';
 
 @Module({
     controllers: [UserController],
+    imports: [PlanModule],
     providers: [
-        PlanModule,
         CacheService,
         JwtService,
         CreateUserUsecase,

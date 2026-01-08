@@ -8,12 +8,12 @@ import { Prisma } from 'generated/prisma/client';
 export class DeleteRecipeUsecase{
     constructor(
         @Inject('RECIPE_REPOSITORY') 
-        private readonly recipeRepository: RecipeRepository
+        private readonly recipe: RecipeRepository
     ) {}
 
     async deleteRecipe(id: number): Promise<void> {
         try {
-            await this.recipeRepository.delete(id)
+            await this.recipe.delete(id)
         } catch (e) {
             if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2025') {
                 throw new RecipeNotFoundException();

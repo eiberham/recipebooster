@@ -1,15 +1,14 @@
 import { Injectable, Inject } from '@nestjs/common';
-import type { PlanRepository } from '../domain/plan.interface';
-import { PlanResponseDto } from '../controllers/dto/plan-response.dto';
+import type { PlanRepository, Plan } from '../domain/plan.interface';
 
 @Injectable()
 export class GetPlanUsecase {
     constructor(
         @Inject('PLAN_REPOSITORY') 
-        private readonly planRepository: PlanRepository
+        private readonly plan: PlanRepository
     ) {}
 
-    async getPlan(id: number): Promise<PlanResponseDto | null> {
-        return this.planRepository.findById(id)
+    async getPlan(id: number): Promise<Plan | null> {
+        return this.plan.findById(id)
     }
 }

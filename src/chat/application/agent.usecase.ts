@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { createAgent } from "langchain";
 import { InMemoryStore } from "@langchain/langgraph";
 import { GetRecipeByNameUsecase } from '../../recipes/application/get-recipe-by-name.usecase';
-import { createRecipeLookupTool } from '../infraestructure/tools/recipe-lookup.tool';
+import { createRecipeLookupTool } from '../infrastructure/tools/recipe-lookup.tool';
 
 @Injectable()
 export class AgentUseCase {

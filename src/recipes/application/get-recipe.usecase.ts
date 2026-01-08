@@ -1,17 +1,16 @@
 import { Injectable, Inject } from '@nestjs/common';
-import type { RecipeRepository } from '../domain/recipe.interface';
-import type { RecipeResponseDto } from '../controllers/dto/recipe-response.dto';
+import type { RecipeRepository, Recipe } from '../domain/recipe.interface';
 import { RecipeNotFoundException } from '../../common/exceptions/recipe-not-found.exception';
 
 @Injectable()
 export class GetRecipeUsecase{
     constructor(
         @Inject('RECIPE_REPOSITORY') 
-        private readonly recipeRepository: RecipeRepository
+        private readonly recipe: RecipeRepository
     ) {}
 
-    async getRecipeById(id: number): Promise<RecipeResponseDto | null> {
-        const recipe = await this.recipeRepository.findById(id)
+    async getRecipeById(id: number): Promise<Recipe| null> {
+        const recipe = await this.recipe.findById(id)
         if (!recipe) {
             throw new RecipeNotFoundException()
         }

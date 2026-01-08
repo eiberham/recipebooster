@@ -6,7 +6,7 @@ import { DeleteRecipeUsecase } from './application/delete-recipe.usecase';
 import { GetRecipeUsecase } from './application/get-recipe.usecase';
 import { GetRecipeByNameUsecase } from './application/get-recipe-by-name.usecase';
 import { UpdateRecipeUsecase } from './application/update-recipe.usecase';
-import { RecipeRepositoryImpl } from './infraestructure/prisma-recipe.repository';
+import { RecipeRepositoryImpl } from './infrastructure/prisma-recipe.repository';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { CacheService } from 'src/redis/redis.service';

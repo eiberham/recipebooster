@@ -81,5 +81,18 @@ export class StripeService {
             throw error
         }
     }
+
+    async getLineItems(sessionId: string): Promise<Stripe.LineItem[]> {
+        try {
+            const lineItems = await this.stripe.checkout.sessions.listLineItems(
+                sessionId,
+                { limit: 100 }
+            );
+            return lineItems.data;
+        } catch (error) {
+            this.logger.error('Error fetching line items from stripe', error);
+            throw error;
+        }
+    }
     
 }

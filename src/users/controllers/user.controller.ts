@@ -13,6 +13,8 @@ import { Role } from 'src/auth/domain/role.enum';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { UseInterceptors } from '@nestjs/common';
+import { CacheInterceptor, CacheTTL, CacheKey } from '@nestjs/cache-manager';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard, RolesGuard)
@@ -28,6 +30,9 @@ export class UserController {
 
     @HttpCode(HttpStatus.OK)
     @Roles(Role.ADMIN)
+    @UseInterceptors(CacheInterceptor)
+    @CacheTTL(30)
+    @CacheKey('users:all')
     @Get()
     async getUsers(@Req() request: Request): Promise<UserResponseDto[]> {
         return this.listUsersUsecase.getUsers();
@@ -35,6 +40,8 @@ export class UserController {
 
     @HttpCode(HttpStatus.OK)
     @Roles(Role.ADMIN)
+    @UseInterceptors(CacheInterceptor)
+    @CacheTTL(30)
     @Get(':id')
     async getUserById(@Req() request: Request, @Param('id', ParseIntPipe) id: number): Promise<UserResponseDto | null> {
         return this.getUserUsecase.getUserById(id);

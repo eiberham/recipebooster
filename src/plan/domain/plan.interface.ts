@@ -1,22 +1,21 @@
-import { PlanResponseDto } from "../controllers/dto/plan-response.dto";
-import { CreatePlanDto } from "../controllers/dto/create-plan.dto";
-import { UpdatePlanDto } from "../controllers/dto/update-plan.dto";
-
 export interface PlanRepository {
-    findById(id: number): Promise<PlanResponseDto | null>;
-    findAll(): Promise<PlanResponseDto[]>;
+    findById(id: number): Promise<Plan | null>;
+    findAll(): Promise<Plan[]>;
     findByName(name: string): Promise<Plan | null>;
-    create( data: CreatePlanDto ): Promise<PlanResponseDto>;
-    update( id: number, data: UpdatePlanDto ): Promise<PlanResponseDto>;
+    create( data: CreatePlanData ): Promise<Plan>;
+    update( id: number, data: UpdatePlanData ): Promise<Plan>;
     delete( id: number ): Promise<void>;
 }
+
+export type CreatePlanData = Omit<Plan, 'id' | 'createdAt'>;
+export type UpdatePlanData = Partial<Omit<Plan, 'id' | 'createdAt'>>;
 
 export interface Plan {
     id: number;
     name: string;
     price: number;
-    stripePriceId: string | null;
-    features: unknown;
+    stripePriceId?: string | null;
+    features: any;
     currency: string;
     createdAt: Date;
 }

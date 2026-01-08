@@ -12,6 +12,8 @@ import { CreatePlanUsecase } from '../application/create-plan.usecase';
 import { PlanResponseDto } from './dto/plan-response.dto';
 import { UpdatePlanUsecase } from '../application/update-plan.usecase';
 import { DeletePlanUsecase } from '../application/delete-plan.usecase';
+import { UseInterceptors } from '@nestjs/common';
+import { CacheInterceptor, CacheTTL, CacheKey } from '@nestjs/cache-manager';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard, RolesGuard)
@@ -28,6 +30,9 @@ export class PlanController {
 
   @HttpCode(HttpStatus.OK)
   @Roles(Role.ADMIN)
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
+  @CacheKey('plans:all')
   @Get()
   async getPlans(): Promise<PlanResponseDto[]> {
     return this.getPlansUsecase.getPlans()
@@ -35,6 +40,8 @@ export class PlanController {
 
   @HttpCode(HttpStatus.OK)
   @Roles(Role.ADMIN)
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   @Get(':id')
   async getPlanById(@Param('id', ParseIntPipe) id: number): Promise<PlanResponseDto | null> {
     return this.getPlanUsecase.getPlan(id)

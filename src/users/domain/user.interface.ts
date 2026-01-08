@@ -1,13 +1,16 @@
+import type { JsonValue } from 'generated/prisma/runtime/client';
+
 export interface User {
     id: number;
     name: string;
+    username: string;
     email: string;
     password: string;
     stripeCustomerId?: string;
     subscription?: Subscription;
     preferences?: JsonValue;
     createdAt: Date;
-    updatedAt: Date;
+    updatedAt: Date | null;
     roles?: string[];
 }
 
@@ -27,16 +30,15 @@ export interface UserPreferences {
 
 export type Subscription = "free" | "basic"
 
-import type { JsonValue } from 'generated/prisma/runtime/client';
-import type { CreateUserDto } from '../controllers/dto/create-user.dto';
-import type { UpdateUserDto } from '../controllers/dto/update-user.dto';
-import type { UserResponseDto } from '../controllers/dto/user-response.dto';
+export type UserResponseData = Omit<User, 'password'>
+export type CreateUserData = Omit<User, 'id' | 'createdAt' | 'updatedAt'>
+export type UpdateUserData = Partial<Omit<User, 'id' | 'createdAt' | 'updatedAt'>>
 
 export interface UserRepository {
-    findAll(): Promise<UserResponseDto[]>;
-    findById(id: number): Promise<UserResponseDto | null>;
+    findAll(): Promise<UserResponseData[]>;
+    findById(id: number): Promise<UserResponseData | null>;
     findByEmail(email: string): Promise<User | null>;
-    create(user: Partial<CreateUserDto>): Promise<UserResponseDto>;
-    update(id: number, user: UpdateUserDto): Promise<UserResponseDto>;
-    delete(id: number): Promise<UserResponseDto>;
+    create(user: Partial<CreateUserData>): Promise<UserResponseData>;
+    update(id: number, user: UpdateUserData): Promise<UserResponseData>;
+    delete(id: number): Promise<UserResponseData>;
 }

@@ -1,6 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import type { RecipeRepository } from '../domain/recipe.interface';
-import type { RecipeResponseDto } from '../controllers/dto/recipe-response.dto';
+import type { RecipeRepository, Recipe } from '../domain/recipe.interface';
 
 @Injectable()
 export class GetRecipeByNameUsecase{
@@ -9,7 +8,7 @@ export class GetRecipeByNameUsecase{
         private readonly recipeRepository: RecipeRepository
     ) {}
 
-    async getRecipeByName(name: string): Promise<RecipeResponseDto | null> {
+    async getRecipeByName(name: string): Promise<Recipe | null> {
         return this.recipeRepository.findByName(name)
     }
 }

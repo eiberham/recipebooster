@@ -5,7 +5,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from '../users/user.module';
 import { GetUserByEmailUsecase } from '../users/application/get-user-by-email.usecase';
-import { UserRepositoryImpl } from '../users/infraestructure/prisma-user.repository';
+import { UserRepositoryImpl } from '../users/infrastructure/prisma-user.repository';
 import { PrismaService } from '../prisma/prisma.service';
 import { CacheService } from 'src/redis/redis.service';
 

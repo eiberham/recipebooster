@@ -1,7 +1,8 @@
 import { Module, DynamicModule } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { StripeService } from './stripe.service';
-import { StripeController } from './stripe.controller';
+import { StripeController } from './controller/stripe.controller';
+import { HandleCheckoutUsecase } from './application/handle-checkout.usecase';
 
 @Module({})
 export class StripeModule{
@@ -11,6 +12,7 @@ export class StripeModule{
             imports: [],
             controllers: [StripeController],
             providers: [
+                HandleCheckoutUsecase,
                 StripeService,
                 {
                     provide: 'STRIPE_API_KEY',

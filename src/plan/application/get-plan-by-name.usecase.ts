@@ -6,10 +6,10 @@ import type { Plan } from '../domain/plan.interface';
 export class GetPlanByNameUsecase {
     constructor(
         @Inject('PLAN_REPOSITORY') 
-        private readonly planRepository: PlanRepository
+        private readonly plan: PlanRepository
     ) {}
 
     async getPlanByName(name: string): Promise<Plan | null> {
-        return this.planRepository.findByName(name)
+        return this.plan.findByName(name)
     }
 }

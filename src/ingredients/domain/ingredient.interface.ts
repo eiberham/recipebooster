@@ -3,6 +3,9 @@ export interface Ingredient {
     name: string;
 }
 
+export type CreateIngredientData = Omit<Ingredient, 'id'>;
+export type UpdateIngredientData = Partial<Omit<Ingredient, 'id'>>;
+
 export interface IngredientRepository {
     findAll(): Promise<Ingredient[]>;
     findById(id: number): Promise<Ingredient | null>;

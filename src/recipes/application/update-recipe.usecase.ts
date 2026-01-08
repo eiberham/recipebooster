@@ -1,16 +1,16 @@
 import { Injectable, Inject } from '@nestjs/common';
-import type { RecipeRepository } from '../domain/recipe.interface';
-import type { RecipeResponseDto } from '../controllers/dto/recipe-response.dto';
-import { UpdateRecipeDto } from '../controllers/dto/update-recipe.dto';
+import type { RecipeRepository, Recipe } from '../domain/recipe.interface';
+
+import { UpdateRecipeData } from '../domain/recipe.interface';
 
 @Injectable()
 export class UpdateRecipeUsecase{
     constructor(
         @Inject('RECIPE_REPOSITORY') 
-        private readonly recipeRepository: RecipeRepository
+        private readonly recipe: RecipeRepository
     ) {}
 
-    async updateRecipe(id: number, recipeData: UpdateRecipeDto): Promise<RecipeResponseDto> {
-        return this.recipeRepository.update(id, recipeData)
+    async updateRecipe(id: number, recipeData: UpdateRecipeData): Promise<Recipe> {
+        return this.recipe.update(id, recipeData)
     }
 }

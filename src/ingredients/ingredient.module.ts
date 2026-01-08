@@ -5,7 +5,7 @@ import { UpdateIngredientUsecase } from './application/update-ingredient.usecase
 import { ListIngredientsUsecase } from './application/list-ingredients.usecase';
 import { GetIngredientUsecase } from './application/get-ingredient.usecase';
 import { DeleteIngredientUsecase } from './application/delete-ingredient.usecase';
-import { IngredientRepositoryImpl } from './infraestructure/prisma-ingredient.repository';
+import { IngredientRepositoryImpl } from './infrastructure/prisma-ingredient.repository';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { CacheService } from 'src/redis/redis.service';

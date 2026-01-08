@@ -1,7 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import type { UserRepository } from '../domain/user.interface';
-import type { UserResponseDto } from '../controllers/dto/user-response.dto';
-import { UpdateUserDto } from '../controllers/dto/update-user.dto';
+import { User, UpdateUserData } from '../domain/user.interface';
 
 @Injectable()
 export class UpdateUserUsecase{
@@ -10,7 +9,7 @@ export class UpdateUserUsecase{
         private readonly userRepository: UserRepository
     ) {}
 
-    async updateUser(id: number, data: UpdateUserDto): Promise<UserResponseDto> {
+    async updateUser(id: number, data: UpdateUserData): Promise<Omit<User, 'password'>> {
         return this.userRepository.update(id, data)
     }
 }
