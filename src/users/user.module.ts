@@ -8,12 +8,12 @@ import { GetUserByUsecase } from './application/get-user-by.usecase';
 import { UserRepositoryImpl } from './infrastructure/prisma-user.repository';
 import { RabbitMQNotificationService } from './infrastructure/rabbitmq-notification.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { RabbitMQProducer } from 'src/rabbitmq/rabbitmq.producer';
-import { RabbitMQService } from 'src/rabbitmq/rabbitmq.service';
+import { RabbitMQProducer } from '@/rabbitmq/rabbitmq.producer';
+import { RabbitMQService } from '@/rabbitmq/rabbitmq.service';
 import { JwtService } from '@nestjs/jwt';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
-import { CacheService } from 'src/redis/redis.service';
-import { PlanModule } from 'src/plan/plan.module';
+import { AuthGuard } from '@/auth/guards/auth.guard';
+import { CacheService } from '@/redis/redis.service';
+import { PlanModule } from '@/plan/plan.module';
 
 @Module({
     controllers: [UserController],

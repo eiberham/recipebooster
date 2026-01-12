@@ -1,9 +1,7 @@
 import { Prisma } from "generated/prisma/edge";
 
 export interface PlanRepository {
-    findById(id: number): Promise<Plan | null>;
     findAll(): Promise<Plan[]>;
-    findByName(name: string): Promise<Plan | null>;
     findBy<T extends Prisma.PlanWhereInput>(query : T): Promise<Plan | null>;
     create( data: CreatePlanData ): Promise<Plan>;
     update( id: number, data: UpdatePlanData ): Promise<Plan>;

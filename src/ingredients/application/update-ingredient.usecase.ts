@@ -1,17 +1,16 @@
 import { Injectable, Inject } from '@nestjs/common'
-import type { IngredientRepository } from '../domain/ingredient.interface';
-import type { IngredientResponseDto } from '../controllers/dto/ingredient-response.dto';
-import { UpdateIngredientDto } from '../controllers/dto/update-ingredient.dto';
+import type { IngredientRepository, Ingredient } from '../domain/ingredient.interface';
+import { UpdateIngredientData } from '../domain/ingredient.interface';
 
 @Injectable()
 export class UpdateIngredientUsecase {
     constructor(
         @Inject('INGREDIENT_REPOSITORY') 
-        private readonly ingredientRepository: IngredientRepository
+        private readonly ingredient: IngredientRepository
     ) {}
 
-    async update(id: number, ingredient: UpdateIngredientDto) : Promise<IngredientResponseDto>{
-        return this.ingredientRepository.update(id, ingredient)
+    async update(id: number, data: UpdateIngredientData) : Promise<Ingredient>{
+        return this.ingredient.update(id, data)
     }
 
 }

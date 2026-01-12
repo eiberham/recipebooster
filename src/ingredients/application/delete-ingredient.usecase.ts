@@ -7,12 +7,12 @@ import { Prisma } from 'generated/prisma/client';
 export class DeleteIngredientUsecase {
     constructor(
         @Inject('INGREDIENT_REPOSITORY') 
-        private readonly ingredientRepository: IngredientRepository
+        private readonly ingredient: IngredientRepository
     ) {}
 
     async delete(id: number): Promise<void> {
         try{
-            await this.ingredientRepository.delete(id)
+            await this.ingredient.delete(id)
         }catch(e){
             if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2025') {
                 throw new IngredientNotFoundException();

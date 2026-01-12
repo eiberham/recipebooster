@@ -1,15 +1,15 @@
 import { Controller, Post, Req, Body, ValidationPipe, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiBearerAuth } from '@nestjs/swagger';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/auth/domain/role.enum';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles } from '@/auth/decorators/roles.decorator';
+import { Role } from '@/auth/domain/role.enum';
+import { AuthGuard } from '@/auth/guards/auth.guard';
+import { RolesGuard } from '@/auth/guards/roles.guard';
 import { CreateSessionUsecase } from '../application/create-session.usecase';
 import { CreateCustomerUsecase } from '../application/create-customer.usecase';
 import { CreateBillingDto } from './dto/create-billing.dto';
-import { GetUserByUsecase } from 'src/users/application/get-user-by.usecase';
-import { UpdateUserUsecase } from 'src/users/application/update-user.usecase';
-import { UserNotFoundException } from 'src/common/exceptions/user-not-found.exception';
+import { GetUserByUsecase } from '@/users/application/get-user-by.usecase';
+import { UpdateUserUsecase } from '@/users/application/update-user.usecase';
+import { UserNotFoundException } from '@/common/exceptions/user-not-found.exception';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard, RolesGuard)

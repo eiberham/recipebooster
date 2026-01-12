@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { User } from '../domain/user.interface'
 import { NotificationService } from '../domain/notification.interface'
-import { RabbitMQProducer } from 'src/rabbitmq/rabbitmq.producer'
+import { RabbitMQProducer } from '@/rabbitmq/rabbitmq.producer'
 
 @Injectable()
 export class RabbitMQNotificationService implements NotificationService {

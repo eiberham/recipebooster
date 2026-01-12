@@ -9,10 +9,10 @@ import { DeleteUserUsecase } from '../application/delete-user.usecase';
 import { UserResponseDto } from './dto/user-response.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Role } from 'src/auth/domain/role.enum';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Role } from '@/auth/domain/role.enum';
+import { Roles } from '@/auth/decorators/roles.decorator';
+import { AuthGuard } from '@/auth/guards/auth.guard';
+import { RolesGuard } from '@/auth/guards/roles.guard';
 import { UseInterceptors } from '@nestjs/common';
 import { CacheInterceptor, CacheTTL, CacheKey } from '@nestjs/cache-manager';
 

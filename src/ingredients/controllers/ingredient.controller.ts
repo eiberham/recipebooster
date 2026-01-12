@@ -3,7 +3,7 @@ import { ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { CreateIngredientUsecase } from '../application/create-ingredient.usecase'
 import { UpdateIngredientUsecase } from '../application/update-ingredient.usecase';
 import { ListIngredientsUsecase } from '../application/list-ingredients.usecase';
-import { GetIngredientUsecase } from '../application/get-ingredient.usecase';
+import { GetIngredientByUsecase } from '../application/get-ingredient-by.usecase';
 import { DeleteIngredientUsecase } from '../application/delete-ingredient.usecase';
 import { IngredientResponseDto } from './dto/ingredient-response.dto';
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
@@ -24,7 +24,7 @@ export class IngredientController {
         private readonly createIngredient: CreateIngredientUsecase,
         private readonly updateIngredient: UpdateIngredientUsecase,
         private readonly listIngredients: ListIngredientsUsecase,
-        private readonly getIngredient: GetIngredientUsecase,
+        private readonly getIngredient: GetIngredientByUsecase,
         private readonly deleteIngredient: DeleteIngredientUsecase
     ) {}
 
@@ -44,7 +44,7 @@ export class IngredientController {
     @CacheTTL(30)
     @Get(':id')
     async findById(@Req() request: Request, @Param('id', ParseIntPipe) id: number) : Promise<IngredientResponseDto | null> {
-        return this.getIngredient.findById(id)
+        return this.getIngredient.findBy({id})
     }
 
     @HttpCode(HttpStatus.CREATED)

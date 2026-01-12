@@ -13,30 +13,6 @@ export class PrismaPlanRepository implements PlanRepository {
         return this.prisma.plan.findMany()
     }
 
-    async findById(id: number): Promise<Plan | null> {
-        const plan = await this.prisma.plan.findUnique({
-            where: { id },
-        })
-
-        if (!plan) {
-            return null
-        }
-
-        return plan
-    }
-
-    async findByName(name: string): Promise<Plan | null> {
-        const plan = await this.prisma.plan.findUnique({
-            where: { name },
-        })
-
-        if (!plan) {
-            return null
-        }
-
-        return plan
-    }
-
     async findBy<T extends Prisma.PlanWhereInput>(query : T): Promise<Plan | null> {
         const plan = await this.prisma.plan.findFirst({
             where: query,

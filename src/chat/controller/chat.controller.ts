@@ -2,10 +2,10 @@ import { Controller, Post, Body, ValidationPipe, UseGuards } from '@nestjs/commo
 import { ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { AgentUseCase } from '../application/agent.usecase';
 import { ChatDto } from './dto/chat-dto';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/auth/domain/role.enum';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { Roles } from '@/auth/decorators/roles.decorator';
+import { Role } from '@/auth/domain/role.enum';
+import { RolesGuard } from '@/auth/guards/roles.guard';
+import { AuthGuard } from '@/auth/guards/auth.guard';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard, RolesGuard)

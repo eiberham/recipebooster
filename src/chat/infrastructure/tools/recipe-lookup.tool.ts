@@ -1,5 +1,5 @@
 import { tool } from "langchain";
-import { GetRecipeByUsecase } from "src/recipes/application/get-recipe-by.usecase";
+import { GetRecipeByUsecase } from "@/recipes/application/get-recipe-by.usecase";
 
 
 export function createRecipeLookupTool(recipe: GetRecipeByUsecase) {

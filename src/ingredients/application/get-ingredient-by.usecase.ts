@@ -1,17 +1,18 @@
 import { Injectable, Inject } from '@nestjs/common'
 import type { IngredientRepository } from '../domain/ingredient.interface';
-import type { IngredientResponseDto } from '../controllers/dto/ingredient-response.dto';
+import { Ingredient } from '../domain/ingredient.interface';
 import { IngredientNotFoundException } from '../../common/exceptions/indredient-not-found.exception';
+import { Prisma } from 'generated/prisma/edge';
 
 @Injectable()
-export class GetIngredientUsecase {
+export class GetIngredientByUsecase {
     constructor(
         @Inject('INGREDIENT_REPOSITORY') 
-        private readonly ingredientRepository: IngredientRepository
+        private readonly ingredient: IngredientRepository
     ) {}
 
-    async findById(id: number): Promise<IngredientResponseDto | null> {
-        const ingredient = await this.ingredientRepository.findById(id);
+    async findBy<T extends Prisma.IngredientWhereInput>(query: T): Promise<Ingredient | null> {
+        const ingredient = await this.ingredient.findBy(query);
         if (!ingredient) {
             throw new IngredientNotFoundException();
         }

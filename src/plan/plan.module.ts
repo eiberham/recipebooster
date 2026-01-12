@@ -6,8 +6,8 @@ import { DeletePlanUsecase } from './application/delete-plan.usecase';
 import { UpdatePlanUsecase } from './application/update-plan.usecase';
 import { CreatePlanUsecase } from './application/create-plan.usecase';
 import { PrismaPlanRepository } from './infrastructure/prisma-plan.repository';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { CacheService } from 'src/redis/redis.service';
+import { PrismaService } from '@/prisma/prisma.service';
+import { CacheService } from '@/redis/redis.service';
 import { JwtService } from '@nestjs/jwt';
 
 @Module({

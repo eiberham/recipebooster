@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { StripeService } from 'src/stripe/stripe.service';
+import { StripeService } from '@/stripe/stripe.service';
 import { Stripe } from 'stripe';
 
 @Injectable()

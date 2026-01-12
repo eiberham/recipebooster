@@ -1,17 +1,17 @@
 import { TestBed, type Mocked } from '@suites/unit';
-import { GetIngredientUsecase } from '../get-ingredient.usecase'; 
+import { GetIngredientByUsecase } from '../get-ingredient-by.usecase'; 
 import type { IngredientRepository } from '../../domain/ingredient.interface';
 
 describe('GetIngredientUseCase', () => {
-    let getIngredientUseCase: GetIngredientUsecase;
+    let getIngredientUseCase: GetIngredientByUsecase;
     let ingredientRepository: Mocked<IngredientRepository>;
     
     beforeAll(async () => {
         const mockRepo = {
-            findById: jest.fn()
+            findBy: jest.fn()
         };
 
-        const { unit } = await TestBed.solitary(GetIngredientUsecase)
+        const { unit } = await TestBed.solitary(GetIngredientByUsecase)
             .mock('INGREDIENT_REPOSITORY')
             .final(mockRepo)
             .compile();
@@ -22,11 +22,11 @@ describe('GetIngredientUseCase', () => {
 
     it('should get an ingredient by id', async () => {
         const ingredient = { id: 1, name: 'Sugar' };
-        ingredientRepository.findById.mockResolvedValue(ingredient);
+        ingredientRepository.findBy.mockResolvedValue(ingredient);
 
-        const result = await getIngredientUseCase.findById(ingredient.id);
+        const result = await getIngredientUseCase.findBy({ id: ingredient.id});
 
-        expect(ingredientRepository.findById).toHaveBeenCalledWith(ingredient.id);
+        expect(ingredientRepository.findBy).toHaveBeenCalledWith({ id: ingredient.id });
         expect(result).toEqual(ingredient);
     });
 })

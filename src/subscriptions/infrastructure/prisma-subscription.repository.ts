@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Subscription, SubscriptionRepository } from '../domain/subscription.interface';
-import { SubscriptionNotFoundException } from 'src/common/exceptions/subscription-not-found.exception';
+import { SubscriptionNotFoundException } from '@/common/exceptions/subscription-not-found.exception';
 import { Prisma } from 'generated/prisma/edge';
 
 @Injectable()

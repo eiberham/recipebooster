@@ -4,8 +4,8 @@ import type { UserRepository, User, Subscription } from '../domain/user.interfac
 import { UserResponseData } from '../domain/user.interface';
 import { UpdateUserData } from '../domain/user.interface';
 import { CreateUserData } from '../domain/user.interface';
-import { PlanNotFoundException } from 'src/common/exceptions/plan-not-found.exception';
-import { UserNotFoundException } from 'src/common/exceptions/user-not-found.exception';
+import { PlanNotFoundException } from '@/common/exceptions/plan-not-found.exception';
+import { UserNotFoundException } from '@/common/exceptions/user-not-found.exception';
 import { Prisma } from 'generated/prisma/edge';
 
 @Injectable()
