@@ -212,9 +212,15 @@ Superchef integrates with Stripe for subscription management, allowing users to 
 
 #### Supported Webhook Events
 
-| Event                        | Description                     | Action                                                       |
-| ---------------------------- | ------------------------------- | ------------------------------------------------------------ |
-| `checkout.session.completed` | Checkout completed successfully | Updates subscription status, billing period, and user access |
+| Event                           | Description                     | Action                                                       |
+| ------------------------------- | ------------------------------- | ------------------------------------------------------------ |
+| `checkout.session.completed`    | Checkout completed successfully | Updates subscription status, billing period, and user access |
+| ------------------------------- | ------------------------------- | ------------------------------------------------------------ |
+| `customer.subscription.deleted` | Customer unsubscribed.          | Updates subscription status, billing period, and user access |
+| ------------------------------- | ------------------------------- | ------------------------------------------------------------ |
+| `invoice.paid`                  | Invoice paid successfully.      | Updates subscription status, billing period, and user access |
+| ------------------------------- | ------------------------------- | ------------------------------------------------------------ |
+| `invoice.payment.failed`.       | Invoice Payment Failed          | Updates subscription status, and notifies the user.          |
 
 ## Project setup
 

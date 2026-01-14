@@ -94,5 +94,17 @@ export class StripeService {
             throw error;
         }
     }
-    
+
+    async getSubscription(subscriptionId: string): Promise<any> {
+        try {
+            const subscription = await this.stripe.subscriptions.retrieve(
+                subscriptionId,
+                { expand: ['latest_invoice'] }
+            );
+            return subscription;
+        } catch (error) {
+            this.logger.error('Error fetching subscription from stripe', error);
+            throw error;
+        }
+    }
 }

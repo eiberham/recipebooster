@@ -2,7 +2,8 @@ import { Module, DynamicModule } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { StripeService } from './stripe.service';
 import { StripeController } from './controller/stripe.controller';
-import { HandleCheckoutUsecase } from './application/handle-checkout.usecase';
+import { CheckoutSessionCompletedUsecase } from './application/checkout-session-completed.usecase';
+import { InvoicePaymentFailedUsecase } from './application/invoice-payment-failed.usecase';
 import { GetSubscriptionByUsecase } from '@/subscriptions/application/get-subscription-by.usecase';
 import { UpdateSubscriptionUsecase } from '@/subscriptions/application/update-subscription.usecase';
 import { UpdateUserUsecase } from '@/users/application/update-user.usecase';
@@ -24,7 +25,8 @@ export class StripeModule {
                 GetUserByUsecase,
                 UpdateSubscriptionUsecase,
                 UpdateUserUsecase,
-                HandleCheckoutUsecase,
+                CheckoutSessionCompletedUsecase,
+                InvoicePaymentFailedUsecase,
                 GetPlanByUsecase,
                 StripeService,
                 {
@@ -33,7 +35,7 @@ export class StripeModule {
                     inject: [ConfigService],
                 }
             ],
-            exports: [StripeService, 'STRIPE_API_KEY'],
+            exports: [StripeService, 'STRIPE_API_KEY', CheckoutSessionCompletedUsecase, InvoicePaymentFailedUsecase],
         };
     }
 }

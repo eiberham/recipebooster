@@ -53,7 +53,7 @@ export class CheckoutController {
                 })
             }
 
-            // price_1SkwdzBc2oUNTGy2w1nInsn9
+            // price_1SowdJBc2oUNTGy23B9LD87B
             const session = await this.stripeSession.create(customerId, priceId)
             return session.url
         } catch (error) {

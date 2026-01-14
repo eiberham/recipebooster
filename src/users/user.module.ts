@@ -39,6 +39,6 @@ import { PlanModule } from '@/plan/plan.module';
             useClass: RabbitMQNotificationService,
         }
     ],
-    exports: ['USER_REPOSITORY'],
+    exports: ['USER_REPOSITORY', 'NOTIFICATION_SERVICE'],
 })
 export class UserModule{}
