@@ -1,25 +1,32 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src",
+  "sourceRoot": "apps/superchef/src",
   "compilerOptions": {
     "deleteOutDir": true,
-    "assets": [
-      {
-        "include": "../generated/prisma/**/*",
-        "outDir": "./dist/generated",
-        "watchAssets": true
-      },
-      {
-        "include": "../prisma/schema.prisma",
-        "outDir": "./dist/prisma",
-        "watchAssets": true
-      },
-      {
-        "include": "../generated/prisma/**/*",
-        "outDir": "./dist/generated"
+    "webpack": false,
+    "tsConfigPath": "apps/superchef/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/superchef",
+  "projects": {
+    "rabbitmq": {
+      "type": "application",
+      "root": "apps/rabbitmq",
+      "entryFile": "main",
+      "sourceRoot": "apps/rabbitmq/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/rabbitmq/tsconfig.app.json"
       }
-    ],
-    "watchAssets": true
+    },
+    "superchef": {
+      "type": "application",
+      "root": "apps/superchef",
+      "entryFile": "main",
+      "sourceRoot": "apps/superchef/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/superchef/tsconfig.app.json"
+      }
+    }
   }
 }

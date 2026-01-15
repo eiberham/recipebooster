@@ -22,7 +22,12 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./apps/superchef/src/*"
+      ],
+      "generated/*": [
+        "./generated/*"
+      ]
     }
   }
 }
