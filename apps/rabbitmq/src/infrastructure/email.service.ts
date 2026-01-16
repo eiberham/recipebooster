@@ -1,4 +1,4 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { Resend } from "resend";
 import { ConfigService } from "@nestjs/config";
 
@@ -6,7 +6,6 @@ import { ConfigService } from "@nestjs/config";
 export class EmailService {
 
     private resend: Resend;
-    private readonly logger = new Logger(EmailService.name);
 
     constructor(private readonly configService: ConfigService) {
         this.resend = new Resend(
@@ -14,19 +13,23 @@ export class EmailService {
         )
     }
 
-    async send(name: string, email: string, subject: string, body: string) {
-        const { data, error } = await this.resend.emails.send({
-            from: "no-reply <delivered+superchef@resend.dev>",
-            to: [email],
-            subject,
-            html: "<h1>Hello " + name + "</h1><p>" + body + "</p>",
-        })
+    async send(name: string, email: string, subject: string, body: string) : Promise<any> {
+        try {
+            const response = await this.resend.emails.send({
+                from: "no-reply <delivered+superchef@resend.dev>",
+                to: [email],
+                subject,
+                html: "<h1>Hello " + name + "</h1><p>" + body + "</p>",
+            }, {
+                idempotencyKey: `${email}-${Date.now()}`
+            })
 
-        if (error) {
-            this.logger.error("Error sending email:", error)
-            throw new Error("Failed to send email")
+            if (response.error) {
+                throw new Error(response.error.message)
+            }
+
+        } catch (error) {
+            throw error
         }
-
-        this.logger.log("Email sent successfully:", data)
     }
 }

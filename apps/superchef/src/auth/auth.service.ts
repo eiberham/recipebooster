@@ -28,7 +28,26 @@ export class AuthService {
             throw new UnauthorizedException('Invalid email or password')
         }
 
-        const payload = { sub: user.id, email: user.email, roles }
         return await this.generateTokens(user.id, user.email, roles)
+    }
+
+    async refreshTokens(userId: number, refreshToken: string): Promise<AuthTokens> {
+        const user = await this.getUserByUsecase.findBy({id: userId})
+        if (!user) {
+            throw new UnauthorizedException('User not found')
+        }
+        const hashedToken = await bcrypt.hash(refreshToken, 10)
+
+        /* if (hashedToken !== user.token) {
+            throw new UnauthorizedException('Invalid refresh token')
+        } */
+
+        // TODO: verify refresh token
+        const roles = user?.roles?.map(role => role) || []
+        return this.generateTokens(userId, user.email, roles)
+    }
+
+    async logout(): Promise<void> {
+        // TODO: logout
     }
 }

@@ -9,6 +9,6 @@ export class SendMailUsecase {
     ) {}
     async send(data: Email): Promise<void> {
         const { name, to, subject, body } = data
-        this.email.send(name, to, subject, body)
+        return this.email.send(name, to, subject, body)
     }
 }

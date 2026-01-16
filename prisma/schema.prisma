@@ -28,6 +28,7 @@ model User {
   recipes          Recipe[] // A user can have multiple recipes
   roles            UserRole[] // A user can have multiple roles through UserRole
   subscription     Subscription?
+  refreshTokens   RefreshToken[]
 
   @@map("user")
 }
@@ -114,4 +115,15 @@ model Subscription {
   plan       Plan      @relation(fields: [planId], references: [id])
 
   @@map("subscription")
+}
+
+model RefreshToken {
+  id         Int      @id @default(autoincrement())
+  userId     Int      @map("user_id")
+  token      String   @unique
+  createdAt  DateTime @default(now()) @map("created_at")
+  expiresAt  DateTime @map("expires_at")
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@map("refresh_token")
 }

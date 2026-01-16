@@ -42,7 +42,7 @@ export class CreateUserUsecase{
                 `
             };
 
-            this.client.emit('send_email', emailPayload);
+            this.client.emit('user_registered', emailPayload);
 
             return user;
         } catch (error) {
