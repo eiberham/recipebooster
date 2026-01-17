@@ -5,6 +5,8 @@ import { AuthDto } from './dto/auth.dto'
 import { RefreshTokenDto } from './dto/refresh-token.dto'
 import { AuthTokens } from '../domain/auth.interface'
 
+import { UpsertRefreshTokenUsecase } from '../application/refresh-token.usecase'
+
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) {}

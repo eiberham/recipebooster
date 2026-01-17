@@ -28,7 +28,15 @@ export class AuthService {
             throw new UnauthorizedException('Invalid email or password')
         }
 
-        return await this.generateTokens(user.id, user.email, roles)
+        const { accessToken, refreshToken } = await this.generateTokens(user.id, user.email, roles)
+
+        // Extract expiration time from refresh token
+        const decodedRefreshToken = this.jwtService.decode(refreshToken) as { exp: number };
+        const expirationTime = decodedRefreshToken?.exp;
+        // TODO: Store hashed refresh token in DB
+        const hashedToken = await bcrypt.hash(refreshToken, 10)
+
+        return { accessToken, refreshToken }
     }
 
     async refreshTokens(userId: number, refreshToken: string): Promise<AuthTokens> {
