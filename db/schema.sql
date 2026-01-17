@@ -126,3 +126,24 @@ ALTER TABLE
   public.subscription
 ADD
   CONSTRAINT subscription_pkey PRIMARY KEY (id)
+
+-- refresh_token --
+
+CREATE TABLE
+  public.refresh_token (
+    id serial NOT NULL,
+    user_id integer NOT NULL,
+    token character varying(255) NOT NULL,
+    device_id character varying(255) NULL,
+    created_at timestamp without time zone NOT NULL DEFAULT now(),
+    device_type character varying(255) NULL,
+    device_name character varying(255) NULL,
+    expires_at timestamp without time zone NULL
+  );
+
+ALTER TABLE
+  public.refresh_token
+ADD
+  CONSTRAINT refresh_token_pkey PRIMARY KEY (id);
+
+ALTER TABLE public.refresh_token ADD CONSTRAINT refresh_token_user_id_device_id UNIQUE (user_id, device_id);

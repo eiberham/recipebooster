@@ -1,0 +1,1 @@
+ALTER TABLE public.refresh_token ADD CONSTRAINT refresh_token_user_id_device_id UNIQUE (user_id, device_id);

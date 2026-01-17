@@ -6,6 +6,10 @@ export class RefreshTokenDto {
     @IsNumber()
     userId: number;
 
+    @ApiProperty({ example: 'device-id-1234' })
+    @IsString()
+    deviceId: string;
+
     @ApiProperty({ example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' })
     @IsString()
     refreshToken: string;
