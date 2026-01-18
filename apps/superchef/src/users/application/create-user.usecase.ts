@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, Logger } from '@nestjs/common';
 import type { UserRepository } from '../domain/user.interface';
 import { UserResponseData } from '../domain/user.interface';
 import { CreateUserData } from '../domain/user.interface';
@@ -7,6 +7,8 @@ import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class CreateUserUsecase{
+    private logger = new Logger(CreateUserUsecase.name);
+
     constructor(
         @Inject('USER_REPOSITORY') 
         private readonly user: UserRepository,
@@ -31,6 +33,7 @@ export class CreateUserUsecase{
             }
 
             user = await this.user.create(payload);
+            this.logger.log(`User created: ${user.email}`);
 
             const emailPayload = {
                 name: data.name,
@@ -46,6 +49,7 @@ export class CreateUserUsecase{
 
             return user;
         } catch (error) {
+            this.logger.error(`Error creating user: ${data.email}`, error.stack);
             throw error;
         }
     }

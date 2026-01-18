@@ -1,21 +1,32 @@
+import * as path from 'path';
+import * as dotenv from 'dotenv';
+
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ConsoleLogger, ValidationPipe, VersioningType } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
+import { otelSDK } from './tracing';
+import { Logger } from './logger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { rawBody: true });
-  const configService = app.get(ConfigService);
-  const logLevel = configService.get<string>('LOG_LEVEL')
-  const port = configService.get<number>('PORT') || 3000;
+  await otelSDK.start()
 
-  app.useLogger(new ConsoleLogger({
+  const app = await NestFactory.create(AppModule, { rawBody: true })
+  const configService = app.get(ConfigService)
+  const logLevel = configService.get<string>('LOG_LEVEL')
+  const port = configService.get<number>('PORT') || 3000
+
+  const logger = new Logger({
       colors: true,
       json: true,
       prefix: 'Superchef',
       logLevels: logLevel ? JSON.parse(logLevel) : ['error', 'warn', 'log', 'debug', 'verbose'],
-  }));
+  })
+
+  app.useLogger(logger);
 
   app.enableVersioning({
     type: VersioningType.URI,

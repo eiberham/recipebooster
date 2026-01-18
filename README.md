@@ -7,18 +7,19 @@
    - [Role-Based Access Control (RBAC)](#role-based-access-control-rbac)
    - [Route Protection](#route-protection)
    - [Rate Limiting](#rate-limiting)
-4. [Async Processing with RabbitMQ](#async-processing-with-rabbitmq)
+4. [Observability & Distributed Tracing](#observability--distributed-tracing)
+5. [Async Processing with RabbitMQ](#async-processing-with-rabbitmq)
    - [Event-driven Architecture](#event-driven-architecture)
    - [Producers & Consumers Separation](#producers--consumers-separation)
-5. [Caching (Redis)](#caching-redis)
-6. [User Preferences](#user-preferences)
-7. [AI Recipe Assistant](#ai-recipe-assistant)
-8. [Project setup](#project-setup)
-9. [Environment variables](#environment-variables)
-10. [Compile and run the project](#compile-and-run-the-project)
-11. [Run tests](#run-tests)
-12. [Deployment](#deployment)
-13. [License](#license)
+6. [Caching (Redis)](#caching-redis)
+7. [User Preferences](#user-preferences)
+8. [AI Recipe Assistant](#ai-recipe-assistant)
+9. [Project setup](#project-setup)
+10. [Environment variables](#environment-variables)
+11. [Compile and run the project](#compile-and-run-the-project)
+12. [Run tests](#run-tests)
+13. [Deployment](#deployment)
+14. [License](#license)
 
 
 ## SuperChef
@@ -70,7 +71,13 @@ Below is a high level overview of the available routes:
   </thead>
   <tbody>
     <tr>
-      <td>POST</td><td>/auth</td><td>Superchef sign in</td><td>Public</td><td>Admin, Viewer</td>
+      <td>POST</td><td>/auth/login</td><td>Superchef sign in</td><td>Public</td><td>Admin, Viewer</td>
+    </tr>
+    <tr>
+      <td>POST</td><td>/auth/refresh</td><td>Token refresh</td><td>Protected</td><td>Admin, Viewer</td>
+    </tr>
+    <tr>
+      <td>POST</td><td>/auth/logout</td><td>Sign out</td><td>Protected</td><td>Admin, Viewer</td>
     </tr>
     <tr>
       <td>GET</td><td>/ingredients</td><td>Get ingredients list</td><td>Protected</td><td>Admin, Viewer</td>
@@ -151,6 +158,39 @@ RBAC is applied at the route level, ensuring fine grained authorization.
 - Built-in rate limiter to protect the API from abuse.
 - Prevents excessive requests to sensitive endpoints
 - Configurable limits per route or globally.
+
+## Observability & Distributed Tracing
+
+This project implements a high-level observability pattern using [OpenTelemetry](https://opentelemetry.io/) and [Honeycomb](https://www.honeycomb.io/). Instead of traditional isolated logs, we use Distributed Tracing to correlate every log entry with a specific request flow.
+
+#### Key Features
+- **Log Correlation:** Every log entry is automatically enriched with a traceId and spanId, allowing for end-to-end debugging.
+
+- **Span Events:** Application logs are pushed to Honeycomb as "Span Events," providing a millisecond-accurate timeline of events within a request.
+
+- **Automatic Context Propagation:** Tracing context is maintained across asynchronous boundaries and distributed systems (e.g., RabbitMQ).
+
+- **Custom Telemetry Logger:** A specialized Logger extends the NestJS ConsoleLogger to handle tracing logic without polluting the Business Logic.
+
+<p align="center">
+  <img src="./telemetry.png" alt="superchef" />
+</p>
+
+#### How to use
+
+The system is designed to be transparent for developers. Simply use the standard NestJS Logger service:
+
+```typescript
+private readonly logger = new Logger(AuthService.name);
+
+async handle() {
+  this.logger.log('User logged in'); // Automatically appears in Honeycomb's trace timeline
+}
+```
+
+#### Monitoring Dashboard
+
+Traces, errors, and performance metrics are available in Honeycomb. Search by traceId to see the full "waterfall" view of any operation.
 
 ## Async Processing with RabbitMQ
 
@@ -243,6 +283,7 @@ REDIS_PORT=
 REDIS_USERNAME=
 REDIS_PASSWORD=
 STRIPE_API_KEY=
+HONEYCOMB_API_KEY=
 ```
 
 ## Compile and run the project

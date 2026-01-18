@@ -1,8 +1,18 @@
+import * as path from 'path';
+import * as dotenv from 'dotenv';
+
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+
 import { NestFactory } from '@nestjs/core';
 import { Transport, MicroserviceOptions } from '@nestjs/microservices';
 import { RabbitmqModule } from './rabbitmq.module';
+import { ConfigService } from '@nestjs/config';
+import { otelSDK } from '@/tracing';
+import { Logger } from '@/logger'
 
 async function bootstrap() {
+  await otelSDK.start();
+
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(RabbitmqModule, {
     transport: Transport.RMQ,
     options: {
@@ -21,6 +31,18 @@ async function bootstrap() {
       noAck: false,
     },
   })
+
+  const configService = app.get(ConfigService)
+  const logLevel = configService.get<string>('LOG_LEVEL')
+
+  const logger = new Logger({
+      colors: true,
+      json: true,
+      prefix: 'RabbitMQ',
+      logLevels: logLevel ? JSON.parse(logLevel) : ['error', 'warn', 'log', 'debug', 'verbose'],
+  })
+
+  app.useLogger(logger)
   
   await app.listen()
 }

@@ -20,7 +20,10 @@ import { CacheModule } from '@nestjs/cache-manager';
   imports: [
     CacheModule.register({ isGlobal: true }),
     StripeModule.forRootAsync(),
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ 
+      isGlobal: true,
+      envFilePath: [__dirname + '/../../../apps/superchef/.env']
+    }),
     RedisModule,
     UserModule,
     RecipeModule,

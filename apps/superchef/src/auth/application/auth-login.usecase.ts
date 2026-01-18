@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { AuthTokens } from '../domain/auth.interface';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -10,6 +10,8 @@ import { RefreshTokenUsecase } from './refresh-token.usecase';
 
 @Injectable()
 export class AuthLoginUsecase extends AuthTokenGenerator {
+    private logger = new Logger(AuthLoginUsecase.name, { timestamp: true });
+
     constructor(
         private readonly user: GetUserByUsecase,
         private readonly token: RefreshTokenUsecase,
@@ -26,6 +28,7 @@ export class AuthLoginUsecase extends AuthTokenGenerator {
         const roles = user?.roles?.map(role => role) || []
 
         if (!user || !bcrypt.compareSync(password, user.password)) {
+            this.logger.warn(`Failed login attempt for email: ${email}`);
             throw new UnauthorizedException('Invalid email or password')
         }
 
@@ -45,6 +48,7 @@ export class AuthLoginUsecase extends AuthTokenGenerator {
         }
         
         await this.token.create(user.id, record)
+        this.logger.log(`User logged in: ${email}, Device ID: ${deviceId}`);
         return { 
             accessToken, 
             refreshToken 
