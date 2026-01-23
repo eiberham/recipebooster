@@ -3,30 +3,30 @@ import { CreateIngredientUsecase } from '../create-ingredient.usecase';
 import type { IngredientRepository } from '../../domain/ingredient.interface';
 
 describe('CreateIngredientUseCase', () => {
-    let createIngredientUseCase: CreateIngredientUsecase;
-    let ingredientRepository: Mocked<IngredientRepository>;
+  let createIngredientUseCase: CreateIngredientUsecase;
+  let ingredientRepository: Mocked<IngredientRepository>;
 
-    beforeAll(async () => {
-        const mockRepo = {
-            create: jest.fn()
-        };
+  beforeAll(async () => {
+    const mockRepo = {
+      create: jest.fn(),
+    };
 
-        const { unit } = await TestBed.solitary(CreateIngredientUsecase)
-            .mock('INGREDIENT_REPOSITORY')
-            .final(mockRepo)
-            .compile();
-        
-        createIngredientUseCase = unit;
-        ingredientRepository = mockRepo as Mocked<IngredientRepository>;
-    });
+    const { unit } = await TestBed.solitary(CreateIngredientUsecase)
+      .mock('INGREDIENT_REPOSITORY')
+      .final(mockRepo)
+      .compile();
 
-    it('should create an ingredient', async () => {
-        const ingredient = { id: 1, name: 'Sugar' };
-        ingredientRepository.create.mockResolvedValue(ingredient);
+    createIngredientUseCase = unit;
+    ingredientRepository = mockRepo as Mocked<IngredientRepository>;
+  });
 
-        const result = await createIngredientUseCase.create(ingredient);
+  it('should create an ingredient', async () => {
+    const ingredient = { id: 1, name: 'Sugar' };
+    ingredientRepository.create.mockResolvedValue(ingredient);
 
-        expect(ingredientRepository.create).toHaveBeenCalledWith(ingredient);
-        expect(result).toEqual(ingredient);
-    });
-})
+    const result = await createIngredientUseCase.create(ingredient);
+
+    expect(ingredientRepository.create).toHaveBeenCalledWith(ingredient);
+    expect(result).toEqual(ingredient);
+  });
+});

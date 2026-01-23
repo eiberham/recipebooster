@@ -3,38 +3,38 @@ import { DeleteUserUsecase } from '../delete-user.usecase';
 import type { UserRepository } from '@/users/domain/user.interface';
 
 describe('DeleteUserUseCase', () => {
-    let deleteUserUsecase: DeleteUserUsecase;
-    let userRepository: Mocked<UserRepository>;
-    
-    beforeAll(async () => {
-        const mockRepo = {
-            delete: jest.fn()
-        };
+  let deleteUserUsecase: DeleteUserUsecase;
+  let userRepository: Mocked<UserRepository>;
 
-        const { unit } = await TestBed.solitary(DeleteUserUsecase)
-            .mock('USER_REPOSITORY')
-            .final(mockRepo)
-            .compile();
-        
-        deleteUserUsecase = unit;
-        userRepository = mockRepo as Mocked<UserRepository>;
-    });
+  beforeAll(async () => {
+    const mockRepo = {
+      delete: jest.fn(),
+    };
 
-    it('should delete a user', async () => {
-        const user = { 
-            id: 1, 
-            name: 'John Doe', 
-            username: 'johndoe', 
-            email: 'john.doe@example.com',
-            password: 'hashedpassword',
-            createdAt: new Date(),
-            updatedAt: new Date()
-        };
+    const { unit } = await TestBed.solitary(DeleteUserUsecase)
+      .mock('USER_REPOSITORY')
+      .final(mockRepo)
+      .compile();
 
-        userRepository.delete.mockResolvedValue();
+    deleteUserUsecase = unit;
+    userRepository = mockRepo as Mocked<UserRepository>;
+  });
 
-        await deleteUserUsecase.deleteUser(user.id);
+  it('should delete a user', async () => {
+    const user = {
+      id: 1,
+      name: 'John Doe',
+      username: 'johndoe',
+      email: 'john.doe@example.com',
+      password: 'hashedpassword',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
 
-        expect(userRepository.delete).toHaveBeenCalledWith(1);
-    });
-})
+    userRepository.delete.mockResolvedValue();
+
+    await deleteUserUsecase.deleteUser(user.id);
+
+    expect(userRepository.delete).toHaveBeenCalledWith(1);
+  });
+});

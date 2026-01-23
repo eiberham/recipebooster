@@ -1,4 +1,17 @@
-import { Controller, Get, Post, Put, Delete, HttpCode, HttpStatus, UseGuards, Body, ValidationPipe, ParseIntPipe, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  HttpCode,
+  HttpStatus,
+  UseGuards,
+  Body,
+  ValidationPipe,
+  ParseIntPipe,
+  Param,
+} from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { GetPlansUsecase } from '../application/get-plans.usecase';
 import { RolesGuard } from '@/auth/guards/roles.guard';
@@ -19,14 +32,13 @@ import { CacheInterceptor, CacheTTL, CacheKey } from '@nestjs/cache-manager';
 @UseGuards(AuthGuard, RolesGuard)
 @Controller('plans')
 export class PlanController {
-
   constructor(
     private readonly getPlansUsecase: GetPlansUsecase,
     private readonly getPlanByUsecase: GetPlanByUsecase,
     private readonly createPlanUsecase: CreatePlanUsecase,
     private readonly updatePlanUsecase: UpdatePlanUsecase,
-    private readonly deletePlanUsecase: DeletePlanUsecase
-  ){}
+    private readonly deletePlanUsecase: DeletePlanUsecase,
+  ) {}
 
   @HttpCode(HttpStatus.OK)
   @Roles(Role.ADMIN)
@@ -35,7 +47,7 @@ export class PlanController {
   @CacheKey('plans:all')
   @Get()
   async getPlans(): Promise<PlanResponseDto[]> {
-    return this.getPlansUsecase.getPlans()
+    return this.getPlansUsecase.getPlans();
   }
 
   @HttpCode(HttpStatus.OK)
@@ -43,29 +55,35 @@ export class PlanController {
   @UseInterceptors(CacheInterceptor)
   @CacheTTL(30)
   @Get(':id')
-  async getPlanById(@Param('id', ParseIntPipe) id: number): Promise<PlanResponseDto | null> {
-    return this.getPlanByUsecase.findBy({id})
+  async getPlanById(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<PlanResponseDto | null> {
+    return this.getPlanByUsecase.findBy({ id });
   }
 
   @HttpCode(HttpStatus.CREATED)
   @Roles(Role.ADMIN)
   @Post()
-  async createPlan(@Body(ValidationPipe) data: CreatePlanDto): Promise<PlanResponseDto> {
-    return this.createPlanUsecase.createPlan(data)
+  async createPlan(
+    @Body(ValidationPipe) data: CreatePlanDto,
+  ): Promise<PlanResponseDto> {
+    return this.createPlanUsecase.createPlan(data);
   }
 
   @HttpCode(HttpStatus.OK)
   @Roles(Role.ADMIN)
   @Put(':id')
-  async updatePlan(@Body(ValidationPipe) data: UpdatePlanDto, @Param('id', ParseIntPipe) id: number): Promise<PlanResponseDto> {
-    return this.updatePlanUsecase.updatePlan(id, data)
+  async updatePlan(
+    @Body(ValidationPipe) data: UpdatePlanDto,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<PlanResponseDto> {
+    return this.updatePlanUsecase.updatePlan(id, data);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Roles(Role.ADMIN)
   @Delete(':id')
   async deletePlan(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    await this.deletePlanUsecase.deletePlan(id)
+    await this.deletePlanUsecase.deletePlan(id);
   }
-
 }

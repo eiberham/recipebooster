@@ -9,17 +9,17 @@ import { JwtService } from '@nestjs/jwt';
 import { CacheService } from '@/redis/redis.service';
 
 @Module({
-    controllers: [ChatController],
-    providers: [
-        CacheService,
-        JwtService,
-        PrismaService,
-        {
-            provide: 'RECIPE_REPOSITORY',
-            useClass: RecipeRepositoryImpl,
-        },
-        AgentUseCase,
-        GetRecipeByUsecase
-    ]
+  controllers: [ChatController],
+  providers: [
+    CacheService,
+    JwtService,
+    PrismaService,
+    {
+      provide: 'RECIPE_REPOSITORY',
+      useClass: RecipeRepositoryImpl,
+    },
+    AgentUseCase,
+    GetRecipeByUsecase,
+  ],
 })
-export class ChatModule{}
+export class ChatModule {}

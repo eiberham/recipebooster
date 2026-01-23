@@ -3,7 +3,6 @@ import { trace, SpanStatusCode } from '@opentelemetry/api';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class Logger extends ConsoleLogger {
-  
   log(message: any, context?: string) {
     this.recordEvent('info', message, context);
     super.log(message, context);
@@ -19,7 +18,12 @@ export class Logger extends ConsoleLogger {
     super.warn(message, context);
   }
 
-  private recordEvent(level: string, message: any, context?: string, stack?: string) {
+  private recordEvent(
+    level: string,
+    message: any,
+    context?: string,
+    stack?: string,
+  ) {
     const span = trace.getActiveSpan();
     if (span) {
       span.addEvent(typeof message === 'string' ? message : 'log', {
@@ -30,7 +34,10 @@ export class Logger extends ConsoleLogger {
       });
 
       if (level === 'error') {
-        span.setStatus({ code: SpanStatusCode.ERROR, message: String(message) });
+        span.setStatus({
+          code: SpanStatusCode.ERROR,
+          message: String(message),
+        });
       }
     }
   }

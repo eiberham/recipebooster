@@ -1,4 +1,13 @@
-import { Controller, Post, Req, Body, ValidationPipe, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Req,
+  Body,
+  ValidationPipe,
+  HttpCode,
+  HttpStatus,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { Roles } from '@/auth/decorators/roles.decorator';
 import { Role } from '@/auth/domain/role.enum';
@@ -15,50 +24,53 @@ import { UserNotFoundException } from '@/common/exceptions/user-not-found.except
 @UseGuards(AuthGuard, RolesGuard)
 @Controller('checkout')
 export class CheckoutController {
+  constructor(
+    private readonly stripeCustomer: CreateCustomerUsecase,
+    private readonly stripeSession: CreateSessionUsecase,
+    private readonly getUserByUsecase: GetUserByUsecase,
+    private readonly updateUserUsecase: UpdateUserUsecase,
+  ) {}
 
-    constructor(
-        private readonly stripeCustomer: CreateCustomerUsecase,
-        private readonly stripeSession: CreateSessionUsecase,
-        private readonly getUserByUsecase: GetUserByUsecase,
-        private readonly updateUserUsecase: UpdateUserUsecase
-    ){}
+  @Post('billing')
+  @HttpCode(HttpStatus.OK)
+  @Roles(Role.ADMIN, Role.VIEWER)
+  @ApiBody({ type: CreateBillingDto })
+  async billing(
+    @Req() request: Request,
+    @Body(ValidationPipe) body: CreateBillingDto,
+  ): Promise<string | null> {
+    try {
+      const { authenticated } = request as any;
+      const { email } = authenticated;
+      const { priceId } = body;
 
-    @Post('billing')
-    @HttpCode(HttpStatus.OK)
-    @Roles(Role.ADMIN, Role.VIEWER)
-    @ApiBody({ type: CreateBillingDto })
-    async billing(@Req() request: Request, @Body(ValidationPipe) body: CreateBillingDto): Promise<string | null> {
-        try {
-            const { authenticated } = request as any
-            const { email } = authenticated
-            const { priceId } = body
+      const user = await this.getUserByUsecase.findBy({ email });
+      if (!user) {
+        throw new UserNotFoundException();
+      }
 
-            const user = await this.getUserByUsecase.findBy({ email });
-            if (!user) {
-                throw new UserNotFoundException()
-            }
+      const stripeCustomerId =
+        user && 'stripeCustomerId' in user ? user.stripeCustomerId : null;
+      let customerId: string;
 
-            const stripeCustomerId = user && 'stripeCustomerId' in user ? user.stripeCustomerId : null
-            let customerId: string
+      if (stripeCustomerId) {
+        customerId = stripeCustomerId;
+      } else {
+        const customer = await this.stripeCustomer.create(email);
+        customerId = customer.id;
 
-            if (stripeCustomerId) {
-                customerId = stripeCustomerId
-            } else {
-                const customer = await this.stripeCustomer.create(email)
-                customerId = customer.id
+        await this.updateUserUsecase.updateUser(user.id, {
+          ...user,
+          stripeCustomerId: customerId,
+        });
+      }
 
-                await this.updateUserUsecase.updateUser(user.id, {
-                    ...user,
-                    stripeCustomerId: customerId
-                })
-            }
-
-            // price_1SowdJBc2oUNTGy23B9LD87B
-            const session = await this.stripeSession.create(customerId, priceId)
-            return session.url
-        } catch (error) {
-            console.error('Error in billing endpoint:', error)
-            throw error
-        }
+      // price_1SowdJBc2oUNTGy23B9LD87B
+      const session = await this.stripeSession.create(customerId, priceId);
+      return session.url;
+    } catch (error) {
+      console.error('Error in billing endpoint:', error);
+      throw error;
     }
+  }
 }

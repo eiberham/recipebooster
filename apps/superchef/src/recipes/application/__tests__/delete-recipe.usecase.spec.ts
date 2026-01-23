@@ -3,29 +3,29 @@ import { DeleteRecipeUsecase } from '../delete-recipe.usecase';
 import type { RecipeRepository } from '../../domain/recipe.interface';
 
 describe('DeleteRecipeUseCase', () => {
-    let deleteRecipeUseCase: DeleteRecipeUsecase;
-    let recipeRepository: Mocked<RecipeRepository>;
-    
-    beforeAll(async () => {
-        const mockRepo = {
-            delete: jest.fn()
-        };
+  let deleteRecipeUseCase: DeleteRecipeUsecase;
+  let recipeRepository: Mocked<RecipeRepository>;
 
-        const { unit } = await TestBed.solitary(DeleteRecipeUsecase)
-            .mock('RECIPE_REPOSITORY')
-            .final(mockRepo)
-            .compile();
-        
-        deleteRecipeUseCase = unit;
-        recipeRepository = mockRepo as Mocked<RecipeRepository>;
-    });
+  beforeAll(async () => {
+    const mockRepo = {
+      delete: jest.fn(),
+    };
 
-    it('should delete a recipe by id', async () => {
-        const recipeId = 1;
-        recipeRepository.delete.mockResolvedValue();
+    const { unit } = await TestBed.solitary(DeleteRecipeUsecase)
+      .mock('RECIPE_REPOSITORY')
+      .final(mockRepo)
+      .compile();
 
-        const result = await deleteRecipeUseCase.deleteRecipe(recipeId);
+    deleteRecipeUseCase = unit;
+    recipeRepository = mockRepo as Mocked<RecipeRepository>;
+  });
 
-        expect(recipeRepository.delete).toHaveBeenCalledWith(recipeId);
-    });
-})
+  it('should delete a recipe by id', async () => {
+    const recipeId = 1;
+    recipeRepository.delete.mockResolvedValue();
+
+    const result = await deleteRecipeUseCase.deleteRecipe(recipeId);
+
+    expect(recipeRepository.delete).toHaveBeenCalledWith(recipeId);
+  });
+});

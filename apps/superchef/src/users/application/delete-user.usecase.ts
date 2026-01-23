@@ -4,20 +4,23 @@ import { UserNotFoundException } from '../../common/exceptions/user-not-found.ex
 import { Prisma } from 'generated/prisma/client';
 
 @Injectable()
-export class DeleteUserUsecase{
-    constructor(
-        @Inject('USER_REPOSITORY') 
-        private readonly userRepository: UserRepository
-    ) {}
+export class DeleteUserUsecase {
+  constructor(
+    @Inject('USER_REPOSITORY')
+    private readonly userRepository: UserRepository,
+  ) {}
 
-    async deleteUser(id: number): Promise<void> {
-        try {
-            await this.userRepository.delete(id)
-        }catch(e){
-            if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2025') {
-                throw new UserNotFoundException();
-            }
-            throw e;
-        }
+  async deleteUser(id: number): Promise<void> {
+    try {
+      await this.userRepository.delete(id);
+    } catch (e) {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === 'P2025'
+      ) {
+        throw new UserNotFoundException();
+      }
+      throw e;
     }
+  }
 }

@@ -1,27 +1,34 @@
 import { Controller, Logger, UseFilters } from '@nestjs/common';
 import { EventPattern, Ctx, RmqContext } from '@nestjs/microservices';
+import type { ChannelModel, ConsumeMessage } from 'amqplib';
+import { UserRegisteredPayload } from '../domain/email.interface';
 import { SendMailUsecase } from '../application/send-mail.usecase';
 import { RmqErrorFilter } from '../infrastructure/filters/rmq.error.filter';
 
 @UseFilters(RmqErrorFilter)
 @Controller()
 export class RabbitmqController {
-  private readonly logger = new Logger(RabbitmqController.name)
+  private readonly logger = new Logger(RabbitmqController.name);
 
-  constructor(
-    private readonly email: SendMailUsecase
-  ) {}
+  constructor(private readonly email: SendMailUsecase) {}
 
   @EventPattern('user_registered')
   async handleSendEmail(@Ctx() context: RmqContext): Promise<void> {
-    const channel = context.getChannelRef()
-    const message = context.getMessage()
-    
-    const { data } = JSON.parse( message.content.toString())
+    const channel = context.getChannelRef() as ChannelModel;
+    const message = context.getMessage() as ConsumeMessage;
 
-    await this.email.send(data)
+    let payload: UserRegisteredPayload;
+    try {
+      payload = JSON.parse(message.content.toString()) as UserRegisteredPayload;
+    } catch (err) {
+      this.logger.error('Failed to parse message content', err as Error);
+      channel.nack(message);
+      return;
+    }
 
-    channel.ack(message)
-    this.logger.log('Email sent successfully')
+    await this.email.send(payload.data);
+
+    channel.ack(message);
+    this.logger.log('Email sent successfully');
   }
 }

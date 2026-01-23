@@ -20,34 +20,30 @@ import { CacheModule } from '@nestjs/cache-manager';
   imports: [
     CacheModule.register({ isGlobal: true }),
     StripeModule.forRootAsync(),
-    ConfigModule.forRoot({ 
+    ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [__dirname + '/../../../apps/superchef/.env']
+      envFilePath: [__dirname + '/../../../apps/superchef/.env'],
     }),
     RedisModule,
     UserModule,
     RecipeModule,
     IngredientModule,
     ThrottlerModule.forRoot({
-      throttlers: [
-        {
-          ttl: 60000,
-          limit: 10,
-        },
-      ],
+      ttl: 60,
+      limit: 10,
     }),
     AuthModule,
     ChatModule,
     PlanModule,
-    CheckoutModule
+    CheckoutModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
     {
-        provide: APP_GUARD,
-        useClass: ThrottlerGuard
-    }
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule {}

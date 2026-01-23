@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import type { UserRepository, User, Subscription } from '../domain/user.interface';
+import type {
+  UserRepository,
+  User,
+  Subscription,
+} from '../domain/user.interface';
 import { UserResponseData } from '../domain/user.interface';
 import { UpdateUserData } from '../domain/user.interface';
 import { CreateUserData } from '../domain/user.interface';
@@ -14,150 +18,183 @@ export class UserRepositoryImpl implements UserRepository {
 
   async findAll(): Promise<UserResponseData[]> {
     const data = await this.prisma.user.findMany({
-      relationLoadStrategy: 'join', 
-      include: { 
-          roles: {
-            include: { 
-              role: {
-                select: { name: true }
-              } 
-            }
-          },
-          subscription: {
-            include: {
-              plan: {
-                select: { name: true }
-              }
-            }
-          }
-      },
-      omit: { password: true} 
-    })
-
-    const users = data.map(
-      ({preferences, roles, subscription, ...user}) => ({
-        ...user,
-        preferences: preferences ?? { diet: 'none', allergies: [] },
-        roles: roles?.map((ur) => ur.role.name) || [],
-        subscription: (subscription?.plan.name ?? 'free') as Subscription
-      })
-    )
-
-    return users
-  }
-
-  async findBy<T extends Prisma.UserWhereInput>(query : T): Promise<User | null> {
-    const data = await this.prisma.user.findFirst({
-      where: { ...query },
       relationLoadStrategy: 'join',
-      include: { 
+      include: {
         roles: {
-          include: { role: true }
+          include: {
+            role: {
+              select: { name: true },
+            },
+          },
         },
         subscription: {
           include: {
             plan: {
-              select: { name: true }
-            }
-          }
-        }
-      }
-    })
+              select: { name: true },
+            },
+          },
+        },
+      },
+      omit: { password: true },
+    });
+
+    const users = data.map(({ preferences, roles, subscription, ...user }) => ({
+      ...user,
+      preferences: preferences ?? { diet: 'none', allergies: [] },
+      roles: roles?.map((ur) => ur.role.name) || [],
+      subscription: (subscription?.plan.name ?? 'free') as Subscription,
+    }));
+
+    return users;
+  }
+
+  async findBy<T extends Prisma.UserWhereInput>(
+    query: T,
+  ): Promise<User | null> {
+    const data = await this.prisma.user.findFirst({
+      where: { ...query },
+      relationLoadStrategy: 'join',
+      include: {
+        roles: {
+          include: { role: true },
+        },
+        subscription: {
+          include: {
+            plan: {
+              select: { name: true },
+            },
+          },
+        },
+      },
+    });
 
     if (!data) return null;
 
     return {
       ...data,
       preferences: data.preferences ?? { diet: 'none', allergies: [] },
-      roles: data.roles?.map(ur => ur.role.name) || [],
-      subscription: (data.subscription?.plan.name ?? 'free') as Subscription
-    }
+      roles: data.roles?.map((ur) => ur.role.name) || [],
+      subscription: (data.subscription?.plan.name ?? 'free') as Subscription,
+    };
   }
 
   async create(data: CreateUserData): Promise<UserResponseData> {
-    const { name, email, username, password, roles, preferences, subscription } = data;
-    
-    const plan = subscription && await this.prisma.plan.findUnique({
-      where: { name: subscription }
-    })
+    const {
+      name,
+      email,
+      username,
+      password,
+      roles,
+      preferences,
+      subscription,
+    } = data;
+
+    const plan =
+      subscription &&
+      (await this.prisma.plan.findUnique({
+        where: { name: subscription },
+      }));
 
     if (subscription && !plan) {
-      throw new PlanNotFoundException()
+      throw new PlanNotFoundException();
     }
 
     const user = await this.prisma.user.create({
-      data: { 
-        name, email, username, password,
+      data: {
+        name,
+        email,
+        username,
+        password,
         ...(preferences && { preferences }),
         roles: {
-          create: roles?.map(role => ({
-            role: {
-              connect: { name: role }
-            }
-          })) || []
+          create:
+            roles?.map((role) => ({
+              role: {
+                connect: { name: role },
+              },
+            })) || [],
         },
-        subscription: { 
-          create: subscription ? {
-            status: 'active',
-            stripeSubscriptionId: '',
-            currentPeriodEnd: null,
-            plan: {
-              connect: { 
-                id: plan!.id, 
-                name: subscription,
+        subscription: {
+          create: subscription
+            ? {
+                status: 'active',
+                stripeSubscriptionId: '',
+                currentPeriodEnd: null,
+                plan: {
+                  connect: {
+                    id: plan!.id,
+                    name: subscription,
+                  },
+                },
               }
-            }
-          } : undefined,
-        }
-      }
-    })
+            : undefined,
+        },
+      },
+    });
 
-    return user
+    return user;
   }
 
-  async update(id: number, data: UpdateUserData ): Promise<UserResponseData> {
-    const { name, email, username, password, preferences, roles, subscription, stripeCustomerId } = data;
+  async update(id: number, data: UpdateUserData): Promise<UserResponseData> {
+    const {
+      name,
+      email,
+      username,
+      password,
+      preferences,
+      roles,
+      subscription,
+      stripeCustomerId,
+    } = data;
 
-    const plan = subscription && await this.prisma.plan.findUnique({
-      where: { name: subscription }
-    })
+    const plan =
+      subscription &&
+      (await this.prisma.plan.findUnique({
+        where: { name: subscription },
+      }));
 
     if (subscription && !plan) {
-      throw new PlanNotFoundException()
+      throw new PlanNotFoundException();
     }
 
     const user = await this.prisma.user.update({
       where: { id },
       data: {
-        name, email, username, password, stripeCustomerId,
+        name,
+        email,
+        username,
+        password,
+        stripeCustomerId,
         ...(preferences && { preferences }),
-        roles: roles ? {
-          deleteMany: {},
-          create: roles.map(role => ({
-            role: {
-              connect: { name: role }
+        roles: roles
+          ? {
+              deleteMany: {},
+              create: roles.map((role) => ({
+                role: {
+                  connect: { name: role },
+                },
+              })),
             }
-          }))
-        } : undefined,
-      }
-    })
+          : undefined,
+      },
+    });
 
-    return user
+    return user;
   }
 
   async delete(id: number): Promise<UserResponseData> {
     const exists = await this.prisma.user.findUnique({
-      where: { id }
-    })
+      where: { id },
+    });
 
     if (!exists) {
-      throw new UserNotFoundException()
+      throw new UserNotFoundException();
     }
 
     const user = await this.prisma.user.delete({
-      where: { id }
-    })
+      where: { id },
+    });
 
-    return user
+    return user;
   }
 }

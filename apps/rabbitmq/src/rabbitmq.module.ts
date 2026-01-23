@@ -7,10 +7,10 @@ import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ 
+    ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [__dirname + '/../../../apps/rabbitmq/.env']
-    })
+      envFilePath: [__dirname + '/../../../apps/rabbitmq/.env'],
+    }),
   ],
   controllers: [RabbitmqController],
   providers: [SendMailUsecase, EmailService, ConfigService],

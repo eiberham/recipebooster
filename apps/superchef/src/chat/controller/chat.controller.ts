@@ -1,4 +1,10 @@
-import { Controller, Post, Body, ValidationPipe, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  ValidationPipe,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { AgentUseCase } from '../application/agent.usecase';
 import { ChatDto } from './dto/chat-dto';
@@ -11,12 +17,12 @@ import { AuthGuard } from '@/auth/guards/auth.guard';
 @UseGuards(AuthGuard, RolesGuard)
 @Controller('chat')
 export class ChatController {
-    constructor(private readonly agent: AgentUseCase) {}
+  constructor(private readonly agent: AgentUseCase) {}
 
-    @Post()
-    @Roles(Role.ADMIN)
-    @ApiBody({ type: ChatDto })
-    async chat(@Body(ValidationPipe) chat: ChatDto): Promise<string> {
-        return this.agent.call(chat.message)
-    }
+  @Post()
+  @Roles(Role.ADMIN)
+  @ApiBody({ type: ChatDto })
+  async chat(@Body(ValidationPipe) chat: ChatDto): Promise<string> {
+    return this.agent.call(chat.message);
+  }
 }

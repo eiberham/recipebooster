@@ -1,4 +1,18 @@
-import { Controller, ParseIntPipe, ValidationPipe, Get, Req, Param, Body, Post, Put, Delete, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  ParseIntPipe,
+  ValidationPipe,
+  Get,
+  Req,
+  Param,
+  Body,
+  Post,
+  Put,
+  Delete,
+  HttpCode,
+  HttpStatus,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { CreateRecipeUsecase } from '../application/create-recipe.usecase';
 import { UpdateRecipeUsecase } from '../application/update-recipe.usecase';
@@ -20,53 +34,61 @@ import { CacheInterceptor, CacheTTL, CacheKey } from '@nestjs/cache-manager';
 @UseGuards(AuthGuard, RolesGuard)
 @Controller('recipes')
 export class RecipeController {
-    constructor(
-        private readonly createRecipeUsecase: CreateRecipeUsecase,
-        private readonly updateRecipeUsecase: UpdateRecipeUsecase,
-        private readonly getRecipeByUsecase: GetRecipeByUsecase,
-        private readonly deleteRecipeUsecase: DeleteRecipeUsecase,
-        private readonly listRecipesUsecase: ListRecipesUsecase
-    ) {}
+  constructor(
+    private readonly createRecipeUsecase: CreateRecipeUsecase,
+    private readonly updateRecipeUsecase: UpdateRecipeUsecase,
+    private readonly getRecipeByUsecase: GetRecipeByUsecase,
+    private readonly deleteRecipeUsecase: DeleteRecipeUsecase,
+    private readonly listRecipesUsecase: ListRecipesUsecase,
+  ) {}
 
-    @HttpCode(HttpStatus.OK)
-    @Roles(Role.ADMIN, Role.VIEWER)
-    @UseInterceptors(CacheInterceptor)
-    @CacheTTL(30)
-    @CacheKey('recipes:all')
-    @Get()
-    async getRecipes( @Req() req: Request ): Promise<RecipeResponseDto[]> {
-        return this.listRecipesUsecase.getRecipes();
-    }
-    
-    @HttpCode(HttpStatus.OK)
-    @Roles(Role.ADMIN, Role.VIEWER)
-    @UseInterceptors(CacheInterceptor)
-    @CacheTTL(30)
-    @Get(':id')
-    async getRecipeById( @Req() req: Request, @Param('id', ParseIntPipe) id: number ): Promise<RecipeResponseDto | null> {
-        return this.getRecipeByUsecase.getRecipeBy({id});
-    }
+  @HttpCode(HttpStatus.OK)
+  @Roles(Role.ADMIN, Role.VIEWER)
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
+  @CacheKey('recipes:all')
+  @Get()
+  async getRecipes(@Req() req: Request): Promise<RecipeResponseDto[]> {
+    return this.listRecipesUsecase.getRecipes();
+  }
 
-    @HttpCode(HttpStatus.CREATED)
-    @Roles(Role.ADMIN, Role.VIEWER)
-    @Post()
-    @ApiBody({ type: CreateRecipeDto })
-    async createRecipe( @Body(ValidationPipe) recipeData: CreateRecipeDto ): Promise<RecipeResponseDto> {
-        return this.createRecipeUsecase.createRecipe(recipeData);
-    }
+  @HttpCode(HttpStatus.OK)
+  @Roles(Role.ADMIN, Role.VIEWER)
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
+  @Get(':id')
+  async getRecipeById(
+    @Req() req: Request,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<RecipeResponseDto | null> {
+    return this.getRecipeByUsecase.getRecipeBy({ id });
+  }
 
-    @HttpCode(HttpStatus.OK)
-    @Roles(Role.ADMIN, Role.VIEWER)
-    @Put(':id')
-    @ApiBody({ type: UpdateRecipeDto })
-    async updateRecipe( @Param('id', ParseIntPipe) id: number, @Body(ValidationPipe) recipeData: UpdateRecipeDto ): Promise<RecipeResponseDto> {
-        return this.updateRecipeUsecase.updateRecipe(id, recipeData);
-    }
+  @HttpCode(HttpStatus.CREATED)
+  @Roles(Role.ADMIN, Role.VIEWER)
+  @Post()
+  @ApiBody({ type: CreateRecipeDto })
+  async createRecipe(
+    @Body(ValidationPipe) recipeData: CreateRecipeDto,
+  ): Promise<RecipeResponseDto> {
+    return this.createRecipeUsecase.createRecipe(recipeData);
+  }
 
-    @HttpCode(HttpStatus.NO_CONTENT)
-    @Roles(Role.ADMIN, Role.VIEWER)
-    @Delete(':id')
-    async deleteRecipe( @Param('id', ParseIntPipe) id: number ): Promise<void> {
-        return this.deleteRecipeUsecase.deleteRecipe(id);
-    }
+  @HttpCode(HttpStatus.OK)
+  @Roles(Role.ADMIN, Role.VIEWER)
+  @Put(':id')
+  @ApiBody({ type: UpdateRecipeDto })
+  async updateRecipe(
+    @Param('id', ParseIntPipe) id: number,
+    @Body(ValidationPipe) recipeData: UpdateRecipeDto,
+  ): Promise<RecipeResponseDto> {
+    return this.updateRecipeUsecase.updateRecipe(id, recipeData);
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Roles(Role.ADMIN, Role.VIEWER)
+  @Delete(':id')
+  async deleteRecipe(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.deleteRecipeUsecase.deleteRecipe(id);
+  }
 }

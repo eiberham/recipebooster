@@ -1,4 +1,4 @@
 export class IngredientResponseDto {
-    id: number;
-    name: string;
+  id: number;
+  name: string;
 }

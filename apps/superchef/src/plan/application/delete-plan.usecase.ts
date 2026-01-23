@@ -3,12 +3,12 @@ import type { PlanRepository } from '../domain/plan.interface';
 
 @Injectable()
 export class DeletePlanUsecase {
-    constructor(
-        @Inject('PLAN_REPOSITORY') 
-        private readonly plan: PlanRepository
-    ) {}
+  constructor(
+    @Inject('PLAN_REPOSITORY')
+    private readonly plan: PlanRepository,
+  ) {}
 
-    async deletePlan(id: number): Promise<void> {
-        return this.plan.delete(id)
-    }
+  async deletePlan(id: number): Promise<void> {
+    return this.plan.delete(id);
+  }
 }

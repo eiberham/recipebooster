@@ -14,36 +14,36 @@ import { CacheService } from '@/redis/redis.service';
 import { PlanModule } from '@/plan/plan.module';
 
 @Module({
-    controllers: [UserController],
-    imports: [
-        ClientsModule.register([
-            {
-                name: 'EMAIL_SERVICE',
-                transport: Transport.RMQ,
-                options: {
-                    urls: ['amqp://localhost:5672'],
-                queue: 'rabbitmq',
-                noAssert: true
-                },
-            },
-        ]),
-        PlanModule
-    ],
-    providers: [
-        CacheService,
-        JwtService,
-        CreateUserUsecase,
-        UpdateUserUsecase,
-        ListUsersUsecase,
-        DeleteUserUsecase,
-        GetUserByUsecase,
-        PrismaService,
-        AuthGuard,
-        {
-            provide: 'USER_REPOSITORY',
-            useClass: UserRepositoryImpl,
+  controllers: [UserController],
+  imports: [
+    ClientsModule.register([
+      {
+        name: 'EMAIL_SERVICE',
+        transport: Transport.RMQ,
+        options: {
+          urls: ['amqp://localhost:5672'],
+          queue: 'rabbitmq',
+          noAssert: true,
         },
-    ],
-    exports: ['USER_REPOSITORY'],
+      },
+    ]),
+    PlanModule,
+  ],
+  providers: [
+    CacheService,
+    JwtService,
+    CreateUserUsecase,
+    UpdateUserUsecase,
+    ListUsersUsecase,
+    DeleteUserUsecase,
+    GetUserByUsecase,
+    PrismaService,
+    AuthGuard,
+    {
+      provide: 'USER_REPOSITORY',
+      useClass: UserRepositoryImpl,
+    },
+  ],
+  exports: ['USER_REPOSITORY'],
 })
-export class UserModule{}
+export class UserModule {}

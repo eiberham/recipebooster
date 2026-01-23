@@ -1,6 +1,5 @@
-import { tool } from "langchain";
-import { GetRecipeByUsecase } from "@/recipes/application/get-recipe-by.usecase";
-
+import { tool } from 'langchain';
+import { GetRecipeByUsecase } from '@/recipes/application/get-recipe-by.usecase';
 
 export function createRecipeLookupTool(recipe: GetRecipeByUsecase) {
   return tool(
@@ -8,8 +7,9 @@ export function createRecipeLookupTool(recipe: GetRecipeByUsecase) {
       return await recipe.getRecipeBy({ name: input });
     },
     {
-      name: "recipe_lookup",
-      description: "Use this tool to look up recipes by name. Input should be the name of the recipe you want to find.",
-    }
+      name: 'recipe_lookup',
+      description:
+        'Use this tool to look up recipes by name. Input should be the name of the recipe you want to find.',
+    },
   );
 }

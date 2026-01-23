@@ -14,8 +14,8 @@ import { JwtService } from '@nestjs/jwt';
   controllers: [PlanController],
   providers: [
     {
-        provide: 'PLAN_REPOSITORY',
-        useClass: PrismaPlanRepository
+      provide: 'PLAN_REPOSITORY',
+      useClass: PrismaPlanRepository,
     },
     GetPlansUsecase,
     GetPlanByUsecase,

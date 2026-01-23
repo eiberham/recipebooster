@@ -20,9 +20,9 @@ describe('RabbitmqController', () => {
         name: '',
         to: '',
         subject: '',
-        body: ''
-      }
-      expect(rabbitmqController.handleSendEmail(data)).toHaveBeenCalled()
+        body: '',
+      };
+      expect(rabbitmqController.handleSendEmail(data)).toHaveBeenCalled();
     });
   });
 });

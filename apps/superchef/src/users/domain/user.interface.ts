@@ -2,43 +2,45 @@ import { Prisma } from 'generated/prisma/edge';
 import type { JsonValue } from 'generated/prisma/runtime/client';
 
 export interface User {
-    id: number;
-    name: string;
-    username: string;
-    email: string;
-    password: string;
-    stripeCustomerId?: string;
-    subscription?: Subscription;
-    preferences?: JsonValue;
-    createdAt: Date;
-    updatedAt: Date | null;
-    roles?: string[];
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+  password: string;
+  stripeCustomerId?: string;
+  subscription?: Subscription;
+  preferences?: JsonValue;
+  createdAt: Date;
+  updatedAt: Date | null;
+  roles?: string[];
 }
 
 const diet = {
-    none : 'none',
-    vegan: 'vegan',
-    vegetarian: 'vegetarian',
-    omnivore: 'omnivore'
-} as const
+  none: 'none',
+  vegan: 'vegan',
+  vegetarian: 'vegetarian',
+  omnivore: 'omnivore',
+} as const;
 
-type Diet = (typeof diet)[keyof typeof diet]
+type Diet = (typeof diet)[keyof typeof diet];
 
 export interface UserPreferences {
-    diet: Diet;
-    allergies: string[];
+  diet: Diet;
+  allergies: string[];
 }
 
-export type Subscription = "free" | "basic"
+export type Subscription = 'free' | 'basic';
 
-export type UserResponseData = Omit<User, 'password'>
-export type CreateUserData = Omit<User, 'id' | 'createdAt' | 'updatedAt'>
-export type UpdateUserData = Partial<Omit<User, 'id' | 'createdAt' | 'updatedAt'>>
+export type UserResponseData = Omit<User, 'password'>;
+export type CreateUserData = Omit<User, 'id' | 'createdAt' | 'updatedAt'>;
+export type UpdateUserData = Partial<
+  Omit<User, 'id' | 'createdAt' | 'updatedAt'>
+>;
 
 export interface UserRepository {
-    findAll(): Promise<UserResponseData[]>;
-    findBy<T extends Prisma.UserWhereInput>(query : T): Promise<User | null>;
-    create(user: Partial<CreateUserData>): Promise<UserResponseData>;
-    update(id: number, user: UpdateUserData): Promise<UserResponseData>;
-    delete(id: number): Promise<UserResponseData>;
+  findAll(): Promise<UserResponseData[]>;
+  findBy<T extends Prisma.UserWhereInput>(query: T): Promise<User | null>;
+  create(user: Partial<CreateUserData>): Promise<UserResponseData>;
+  update(id: number, user: UpdateUserData): Promise<UserResponseData>;
+  delete(id: number): Promise<UserResponseData>;
 }

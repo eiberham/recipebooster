@@ -10,20 +10,15 @@ import { JwtService } from '@nestjs/jwt';
 import { UserModule } from '@/users/user.module';
 
 @Module({
-    imports: [
-        StripeModule.forRootAsync(),
-        UserModule
-    ],
-    controllers: [
-        CheckoutController
-    ],
-    providers: [
-        StripeService,
-        CreateSessionUsecase,
-        CreateCustomerUsecase,
-        GetUserByUsecase,
-        UpdateUserUsecase,
-        JwtService
-    ]
+  imports: [StripeModule.forRootAsync(), UserModule],
+  controllers: [CheckoutController],
+  providers: [
+    StripeService,
+    CreateSessionUsecase,
+    CreateCustomerUsecase,
+    GetUserByUsecase,
+    UpdateUserUsecase,
+    JwtService,
+  ],
 })
 export class CheckoutModule {}

@@ -39,7 +39,7 @@ import { PrismaRefreshTokenRepository } from './infrastructure/prisma-refresh-to
     {
       provide: 'USER_REPOSITORY',
       useClass: UserRepositoryImpl,
-    }
+    },
   ],
   exports: [],
 })

@@ -6,51 +6,51 @@ import { CreateUserData } from '../domain/user.interface';
 import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
-export class CreateUserUsecase{
-    private logger = new Logger(CreateUserUsecase.name);
+export class CreateUserUsecase {
+  private logger = new Logger(CreateUserUsecase.name);
 
-    constructor(
-        @Inject('USER_REPOSITORY') 
-        private readonly user: UserRepository,
-        @Inject('EMAIL_SERVICE')
-        private client: ClientProxy
-    ) {}
+  constructor(
+    @Inject('USER_REPOSITORY')
+    private readonly user: UserRepository,
+    @Inject('EMAIL_SERVICE')
+    private client: ClientProxy,
+  ) {}
 
-    async hashPassword(password: string): Promise<string> {
-        const salt = await bcrypt.genSalt(10);
-        password = await bcrypt.hash(password, salt);
-        return password;
-    }
+  async hashPassword(password: string): Promise<string> {
+    const salt = await bcrypt.genSalt(10);
+    password = await bcrypt.hash(password, salt);
+    return password;
+  }
 
-    async createUser( data : CreateUserData ): Promise<UserResponseData> {
-        let user: UserResponseData | null = null;
-        try {
-            const hashed = await this.hashPassword(data.password);
+  async createUser(data: CreateUserData): Promise<UserResponseData> {
+    let user: UserResponseData | null = null;
+    try {
+      const hashed = await this.hashPassword(data.password);
 
-            const payload = {
-                ...data,
-                password: hashed
-            }
+      const payload = {
+        ...data,
+        password: hashed,
+      };
 
-            user = await this.user.create(payload);
-            this.logger.log(`User created: ${user.email}`);
+      user = await this.user.create(payload);
+      this.logger.log(`User created: ${user.email}`);
 
-            const emailPayload = {
-                name: data.name,
-                to: data.email,
-                subject: 'Welcome to superchef!',
-                body: `
+      const emailPayload = {
+        name: data.name,
+        to: data.email,
+        subject: 'Welcome to superchef!',
+        body: `
                 Thank you for registering at superchef. 
                 We are excited to have you on board! 
-                `
-            };
+                `,
+      };
 
-            this.client.emit('user_registered', emailPayload);
+      this.client.emit('user_registered', emailPayload);
 
-            return user;
-        } catch (error) {
-            this.logger.error(`Error creating user: ${data.email}`, error.stack);
-            throw error;
-        }
+      return user;
+    } catch (error) {
+      this.logger.error(`Error creating user: ${data.email}`, error.stack);
+      throw error;
     }
+  }
 }

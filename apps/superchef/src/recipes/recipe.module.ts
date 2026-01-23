@@ -10,22 +10,21 @@ import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { CacheService } from '@/redis/redis.service';
 
-
 @Module({
-    controllers: [RecipeController],
-    providers: [
-        CacheService,
-        JwtService,
-        CreateRecipeUsecase,
-        UpdateRecipeUsecase,
-        GetRecipeByUsecase,
-        DeleteRecipeUsecase,
-        ListRecipesUsecase,
-        PrismaService,
-        {
-            provide: 'RECIPE_REPOSITORY',
-            useClass: RecipeRepositoryImpl,
-        }
-    ]
+  controllers: [RecipeController],
+  providers: [
+    CacheService,
+    JwtService,
+    CreateRecipeUsecase,
+    UpdateRecipeUsecase,
+    GetRecipeByUsecase,
+    DeleteRecipeUsecase,
+    ListRecipesUsecase,
+    PrismaService,
+    {
+      provide: 'RECIPE_REPOSITORY',
+      useClass: RecipeRepositoryImpl,
+    },
+  ],
 })
 export class RecipeModule {}

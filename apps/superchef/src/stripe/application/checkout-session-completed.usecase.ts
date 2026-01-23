@@ -10,80 +10,101 @@ import { GetPlanByUsecase } from '@/plan/application/get-plan-by.usecase';
 
 @Injectable()
 export class CheckoutSessionCompletedUsecase {
-    Logger = new Logger(CheckoutSessionCompletedUsecase.name)
+  Logger = new Logger(CheckoutSessionCompletedUsecase.name);
 
-    constructor(
-        private readonly stripe: StripeService,
-        private readonly getSubscriptionByUsecase: GetSubscriptionByUsecase,
-        private readonly updateSubscriptionUsecase: UpdateSubscriptionUsecase,
-        private readonly updateUserUsecase: UpdateUserUsecase,
-        private readonly getUserByUsecase: GetUserByUsecase,
-        private readonly getPlanByUsecase: GetPlanByUsecase
-    ) {}
+  constructor(
+    private readonly stripe: StripeService,
+    private readonly getSubscriptionByUsecase: GetSubscriptionByUsecase,
+    private readonly updateSubscriptionUsecase: UpdateSubscriptionUsecase,
+    private readonly updateUserUsecase: UpdateUserUsecase,
+    private readonly getUserByUsecase: GetUserByUsecase,
+    private readonly getPlanByUsecase: GetPlanByUsecase,
+  ) {}
 
-    async handle(session: Stripe.Checkout.Session): Promise<void> {
-        const { id: sessionId, customer: stripeCustomerId, subscription: stripeSubscriptionId } = session
-        
-        const stripeSubscription = await this.stripe.getSubscription(stripeSubscriptionId as string) as any
+  async handle(session: Stripe.Checkout.Session): Promise<void> {
+    const {
+      id: sessionId,
+      customer: stripeCustomerId,
+      subscription: stripeSubscriptionId,
+    } = session;
 
-        const user = await this.getUserByUsecase.findBy({ stripeCustomerId: stripeCustomerId as string })
-        const userId = user?.id
+    const stripeSubscription = await this.stripe.getSubscription(
+      stripeSubscriptionId as string,
+    );
 
-        const items = await this.stripe.getLineItems(sessionId)
-        const price= items?.[0].price
+    const user = await this.getUserByUsecase.findBy({
+      stripeCustomerId: stripeCustomerId as string,
+    });
+    const userId = user?.id;
 
-        let interval: string
+    const items = await this.stripe.getLineItems(sessionId);
+    const price = items?.[0].price;
 
-        if (price?.type === 'recurring' && price.recurring) {
-            interval = price.recurring.interval;  // 'month', 'year'
+    let interval: string;
 
-            const plan = await this.getPlanByUsecase.findBy({ stripePriceId: price.id })
+    if (price?.type === 'recurring' && price.recurring) {
+      interval = price.recurring.interval; // 'month', 'year'
 
-            const subscription = await this.getSubscriptionByUsecase.getSubscriptionBy({ userId: Number(userId) })
-            
-            if (!subscription) {
-                throw new SubscriptionNotFoundException()
-            }
+      const plan = await this.getPlanByUsecase.findBy({
+        stripePriceId: price.id,
+      });
 
-            let currentPeriodEnd: Date;
-            const stripePeriodEnd = stripeSubscription.current_period_end;
+      const subscription =
+        await this.getSubscriptionByUsecase.getSubscriptionBy({
+          userId: Number(userId),
+        });
 
-            if (stripePeriodEnd) {
-                currentPeriodEnd = new Date(stripePeriodEnd * 1000)
-            } else if (stripeSubscription.latest_invoice) {
-                const invoice = stripeSubscription.latest_invoice as Stripe.Invoice;
-                const periodEnd = invoice.lines.data[0].period.end;
-                currentPeriodEnd = new Date(periodEnd * 1000)
-            } else if (stripeSubscription.billing_cycle_anchor) {
-                const anchorDate = new Date(stripeSubscription.billing_cycle_anchor * 1000)
-                if (interval === 'month') {
-                    anchorDate.setMonth(anchorDate.getMonth() + 1)
-                } else {
-                    anchorDate.setFullYear(anchorDate.getFullYear() + 1)
-                }
-                currentPeriodEnd = anchorDate;
-            } else {
-                currentPeriodEnd = new Date(Date.now() + (interval === 'month' ? 30 : 365) * 24 * 60 * 60 * 1000);
-            }
+      if (!subscription) {
+        throw new SubscriptionNotFoundException();
+      }
 
-            const updateTo = {
-                ...subscription,
-                stripeSubscriptionId: stripeSubscriptionId as string,
-                currentPeriodEnd,
-                status: 'active',
-                interval: interval,
-                planId: plan?.id ? plan.id : subscription.planId
-            }
+      let currentPeriodEnd: Date;
+      const stripePeriodEnd = stripeSubscription.current_period_end;
 
-            try {
-                await Promise.all([
-                    this.updateUserUsecase.updateUser(Number(userId), { stripeCustomerId: stripeCustomerId as string }),
-                    this.updateSubscriptionUsecase.update(subscription!.id, updateTo)
-                ])
-            } catch (error) {
-                this.Logger.error('Error updating subscription after checkout session completed:', error)
-            }
-
+      if (stripePeriodEnd) {
+        currentPeriodEnd = new Date(stripePeriodEnd * 1000);
+      } else if (stripeSubscription.latest_invoice) {
+        const invoice = stripeSubscription.latest_invoice as Stripe.Invoice;
+        const periodEnd = invoice.lines.data[0].period.end;
+        currentPeriodEnd = new Date(periodEnd * 1000);
+      } else if (stripeSubscription.billing_cycle_anchor) {
+        const anchorDate = new Date(
+          stripeSubscription.billing_cycle_anchor * 1000,
+        );
+        if (interval === 'month') {
+          anchorDate.setMonth(anchorDate.getMonth() + 1);
+        } else {
+          anchorDate.setFullYear(anchorDate.getFullYear() + 1);
         }
+        currentPeriodEnd = anchorDate;
+      } else {
+        currentPeriodEnd = new Date(
+          Date.now() + (interval === 'month' ? 30 : 365) * 24 * 60 * 60 * 1000,
+        );
+      }
+
+      const updateTo = {
+        ...subscription,
+        stripeSubscriptionId: stripeSubscriptionId as string,
+        currentPeriodEnd,
+        status: 'active',
+        interval: interval,
+        planId: plan?.id ? plan.id : subscription.planId,
+      };
+
+      try {
+        await Promise.all([
+          this.updateUserUsecase.updateUser(Number(userId), {
+            stripeCustomerId: stripeCustomerId as string,
+          }),
+          this.updateSubscriptionUsecase.update(subscription.id, updateTo),
+        ]);
+      } catch (error) {
+        this.Logger.error(
+          'Error updating subscription after checkout session completed:',
+          error,
+        );
+      }
     }
+  }
 }

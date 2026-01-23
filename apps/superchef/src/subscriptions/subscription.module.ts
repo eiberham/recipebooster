@@ -5,15 +5,15 @@ import { GetSubscriptionByUsecase } from './application/get-subscription-by.usec
 import { UpdateSubscriptionUsecase } from './application/update-subscription.usecase';
 
 @Module({
-    providers: [
-        {
-            provide: 'SUBSCRIPTION_REPOSITORY',
-            useClass: SubscriptionRepositoryImpl,
-        },
-        GetSubscriptionByUsecase,
-        UpdateSubscriptionUsecase,
-        PrismaService
-    ],
-    exports: ['SUBSCRIPTION_REPOSITORY']
+  providers: [
+    {
+      provide: 'SUBSCRIPTION_REPOSITORY',
+      useClass: SubscriptionRepositoryImpl,
+    },
+    GetSubscriptionByUsecase,
+    UpdateSubscriptionUsecase,
+    PrismaService,
+  ],
+  exports: ['SUBSCRIPTION_REPOSITORY'],
 })
 export class SubscriptionModule {}

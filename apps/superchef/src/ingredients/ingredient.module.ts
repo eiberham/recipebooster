@@ -11,20 +11,20 @@ import { JwtService } from '@nestjs/jwt';
 import { CacheService } from '@/redis/redis.service';
 
 @Module({
-    controllers: [IngredientController],
-    providers: [
-        CacheService,
-        JwtService,
-        CreateIngredientUsecase,
-        UpdateIngredientUsecase,
-        ListIngredientsUsecase,
-        GetIngredientByUsecase,
-        DeleteIngredientUsecase,
-        PrismaService,
-        {
-            provide: 'INGREDIENT_REPOSITORY',
-            useClass: IngredientRepositoryImpl,
-        }
-    ]
+  controllers: [IngredientController],
+  providers: [
+    CacheService,
+    JwtService,
+    CreateIngredientUsecase,
+    UpdateIngredientUsecase,
+    ListIngredientsUsecase,
+    GetIngredientByUsecase,
+    DeleteIngredientUsecase,
+    PrismaService,
+    {
+      provide: 'INGREDIENT_REPOSITORY',
+      useClass: IngredientRepositoryImpl,
+    },
+  ],
 })
 export class IngredientModule {}

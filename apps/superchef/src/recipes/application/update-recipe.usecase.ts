@@ -4,13 +4,16 @@ import type { RecipeRepository, Recipe } from '../domain/recipe.interface';
 import { UpdateRecipeData } from '../domain/recipe.interface';
 
 @Injectable()
-export class UpdateRecipeUsecase{
-    constructor(
-        @Inject('RECIPE_REPOSITORY') 
-        private readonly recipe: RecipeRepository
-    ) {}
+export class UpdateRecipeUsecase {
+  constructor(
+    @Inject('RECIPE_REPOSITORY')
+    private readonly recipe: RecipeRepository,
+  ) {}
 
-    async updateRecipe(id: number, recipeData: UpdateRecipeData): Promise<Recipe> {
-        return this.recipe.update(id, recipeData)
-    }
+  async updateRecipe(
+    id: number,
+    recipeData: UpdateRecipeData,
+  ): Promise<Recipe> {
+    return this.recipe.update(id, recipeData);
+  }
 }
