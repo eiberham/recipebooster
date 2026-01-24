@@ -22,10 +22,12 @@ export class AgentUseCase {
     });
   }
 
-  async call(message: string): Promise<string> {
-    const response = await this.agent.invoke({
+  async *call(message: string): AsyncGenerator<string> {
+    const stream = await this.agent.stream({
       messages: [{ role: 'user', content: message }],
     });
-    return response;
+    for await (const chunk of stream) {
+      yield chunk.content
+    }
   }
 }
