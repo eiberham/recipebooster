@@ -1,9 +1,9 @@
 import { Prisma } from 'generated/prisma/edge';
 
 export interface Subscription {
-  id: number;
-  userId: number;
-  planId: number;
+  id: string;
+  userId: string;
+  planId: string;
   stripeSubscriptionId: string | null;
   status: string | null;
   currentPeriodEnd: Date | null;
@@ -17,8 +17,8 @@ export interface SubscriptionRepository {
     query: T,
   ): Promise<Subscription | null>;
   update(
-    id: number,
+    id: string,
     subscription: Partial<Subscription>,
   ): Promise<Subscription>;
-  delete(id: number): Promise<void>;
+  delete(id: string): Promise<void>;
 }

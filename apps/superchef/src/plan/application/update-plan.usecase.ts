@@ -12,7 +12,7 @@ export class UpdatePlanUsecase {
     private readonly plan: PlanRepository,
   ) {}
 
-  async updatePlan(id: number, data: CreatePlanData): Promise<Plan> {
+  async updatePlan(id: string, data: CreatePlanData): Promise<Plan> {
     return this.plan.update(id, data);
   }
 }

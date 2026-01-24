@@ -16,7 +16,7 @@ export class IngredientRepositoryImpl implements IngredientRepository {
     return this.prisma.ingredient.findMany();
   }
 
-  async findById(id: number): Promise<Ingredient | null> {
+  async findById(id: string): Promise<Ingredient | null> {
     return this.prisma.ingredient.findUnique({
       where: { id },
     });
@@ -37,7 +37,7 @@ export class IngredientRepositoryImpl implements IngredientRepository {
   }
 
   async update(
-    id: number,
+    id: string,
     ingredient: UpdateIngredientData,
   ): Promise<Ingredient> {
     return this.prisma.ingredient.update({
@@ -46,7 +46,7 @@ export class IngredientRepositoryImpl implements IngredientRepository {
     });
   }
 
-  async delete(id: number): Promise<Ingredient> {
+  async delete(id: string): Promise<Ingredient> {
     return this.prisma.ingredient.delete({
       where: { id },
     });

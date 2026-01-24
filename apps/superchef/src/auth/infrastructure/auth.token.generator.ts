@@ -8,7 +8,7 @@ export class AuthTokenGenerator {
     protected readonly jwtService: JwtService,
   ) {}
   async generateTokens(
-    userId: number,
+    userId: string,
     email: string,
     roles: string[],
   ): Promise<AuthTokens> {

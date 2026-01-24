@@ -20,7 +20,7 @@ export class SubscriptionRepositoryImpl implements SubscriptionRepository {
   }
 
   async update(
-    id: number,
+    id: string,
     subscription: Partial<Subscription>,
   ): Promise<Subscription> {
     const exists = await this.prisma.subscription.findUnique({
@@ -41,7 +41,7 @@ export class SubscriptionRepositoryImpl implements SubscriptionRepository {
     });
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     await this.prisma.subscription.delete({ where: { id } });
   }
 }

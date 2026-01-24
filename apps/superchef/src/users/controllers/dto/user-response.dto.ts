@@ -2,7 +2,7 @@ import { JsonValue } from 'generated/prisma/runtime/client';
 import type { Subscription } from '../../domain/user.interface';
 
 export class UserResponseDto {
-  id: number;
+  id: string;
   name: string;
   email: string;
   stripeCustomerId?: string;

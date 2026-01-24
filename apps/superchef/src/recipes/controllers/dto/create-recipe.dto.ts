@@ -26,14 +26,14 @@ export class CreateRecipeDto {
   @ApiProperty({ example: 'http://example.com/image.jpg' })
   imageUrl: string;
 
-  @ApiProperty({ example: 1 })
+  @ApiProperty({ example: 'user-123' })
   @IsNotEmpty()
-  userId: number;
+  userId: string;
 
   @ApiProperty({
     example: [
       {
-        ingredientId: 1,
+        ingredientId: 'ingredient-123',
         quantity: 2,
         unit: 'slices',
       },

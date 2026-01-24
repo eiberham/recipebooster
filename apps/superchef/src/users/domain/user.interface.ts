@@ -2,7 +2,7 @@ import { Prisma } from 'generated/prisma/edge';
 import type { JsonValue } from 'generated/prisma/runtime/client';
 
 export interface User {
-  id: number;
+  id: string;
   name: string;
   username: string;
   email: string;
@@ -41,6 +41,6 @@ export interface UserRepository {
   findAll(): Promise<UserResponseData[]>;
   findBy<T extends Prisma.UserWhereInput>(query: T): Promise<User | null>;
   create(user: Partial<CreateUserData>): Promise<UserResponseData>;
-  update(id: number, user: UpdateUserData): Promise<UserResponseData>;
-  delete(id: number): Promise<UserResponseData>;
+  update(id: string, user: UpdateUserData): Promise<UserResponseData>;
+  delete(id: string): Promise<UserResponseData>;
 }

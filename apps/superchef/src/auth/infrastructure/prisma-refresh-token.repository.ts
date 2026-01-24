@@ -11,7 +11,7 @@ export class PrismaRefreshTokenRepository implements RefreshTokenRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async upsert(
-    userId: number,
+    userId: string,
     data: CreateRefreshToken,
   ): Promise<RefreshToken> {
     const refreshToken = await this.prisma.refreshToken.upsert({
@@ -44,7 +44,7 @@ export class PrismaRefreshTokenRepository implements RefreshTokenRepository {
     };
   }
 
-  async find(userId: number, deviceId: string): Promise<RefreshToken | null> {
+  async find(userId: string, deviceId: string): Promise<RefreshToken | null> {
     return this.prisma.refreshToken.findUnique({
       where: {
         userId_deviceId: {
@@ -55,7 +55,7 @@ export class PrismaRefreshTokenRepository implements RefreshTokenRepository {
     });
   }
 
-  async delete(userId: number, deviceId: string): Promise<void> {
+  async delete(userId: string, deviceId: string): Promise<void> {
     await this.prisma.refreshToken.delete({
       where: {
         userId_deviceId: {

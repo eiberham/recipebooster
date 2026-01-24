@@ -12,7 +12,7 @@ export class UpdateIngredientUsecase {
     private readonly ingredient: IngredientRepository,
   ) {}
 
-  async update(id: number, data: UpdateIngredientData): Promise<Ingredient> {
+  async update(id: string, data: UpdateIngredientData): Promise<Ingredient> {
     return this.ingredient.update(id, data);
   }
 }

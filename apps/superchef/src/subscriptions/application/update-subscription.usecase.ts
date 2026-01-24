@@ -8,7 +8,7 @@ export class UpdateSubscriptionUsecase {
     @Inject('SUBSCRIPTION_REPOSITORY')
     private readonly subscription: SubscriptionRepository,
   ) {}
-  async update(id: number, subscription: Subscription): Promise<Subscription> {
+  async update(id: string, subscription: Subscription): Promise<Subscription> {
     return this.subscription.update(id, subscription);
   }
 }

@@ -1,19 +1,19 @@
 import { Prisma } from 'generated/prisma/edge';
 
 export interface Recipe {
-  id: number;
+  id: string;
   name: string;
   description: string;
   steps: string;
   imageUrl: string | null;
-  userId: number;
+  userId: string;
   createdAt: Date;
   updatedAt: Date | null;
   ingredients?: RecipeIngredient[];
 }
 
 type RecipeIngredient = {
-  ingredientId: number;
+  ingredientId: string;
   quantity: number | null;
   unit: string | null;
 };
@@ -27,6 +27,6 @@ export interface RecipeRepository {
   findAll(): Promise<Recipe[]>;
   findBy<T extends Prisma.RecipeWhereInput>(query: T): Promise<Recipe | null>;
   create(recipe: CreateRecipeData): Promise<Recipe>;
-  update(id: number, recipe: UpdateRecipeData): Promise<Recipe>;
-  delete(id: number): Promise<Recipe>;
+  update(id: string, recipe: UpdateRecipeData): Promise<Recipe>;
+  delete(id: string): Promise<Recipe>;
 }

@@ -9,7 +9,6 @@ import { AuthLogoutUsecase } from './application/auth-logout.usecase';
 import { RefreshTokenUsecase } from './application/refresh-token.usecase';
 import { UserRepositoryImpl } from '../users/infrastructure/prisma-user.repository';
 import { PrismaService } from '../prisma/prisma.service';
-import { CacheService } from '@/redis/redis.service';
 import { PrismaRefreshTokenRepository } from './infrastructure/prisma-refresh-token.repository';
 
 @Module({
@@ -26,7 +25,6 @@ import { PrismaRefreshTokenRepository } from './infrastructure/prisma-refresh-to
   ],
   controllers: [AuthController],
   providers: [
-    CacheService,
     GetUserByUsecase,
     AuthLoginUsecase,
     AuthLogoutUsecase,

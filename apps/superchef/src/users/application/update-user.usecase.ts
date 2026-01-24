@@ -10,7 +10,7 @@ export class UpdateUserUsecase {
   ) {}
 
   async updateUser(
-    id: number,
+    id: string,
     data: UpdateUserData,
   ): Promise<Omit<User, 'password'>> {
     return this.user.update(id, data);

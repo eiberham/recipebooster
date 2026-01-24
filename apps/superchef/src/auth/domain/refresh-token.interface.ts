@@ -1,6 +1,6 @@
 export interface RefreshToken {
-  id: number;
-  userId: number;
+  id: string;
+  userId: string;
   token: string;
   deviceId: string;
   expiresAt: Date;
@@ -21,9 +21,9 @@ export type UpdateRefreshToken = Partial<
 
 export interface RefreshTokenRepository {
   upsert(
-    userId: number,
+    userId: string,
     refreshToken: CreateRefreshToken,
   ): Promise<RefreshToken>;
-  find(userId: number, deviceId: string): Promise<RefreshToken | null>;
-  delete(userId: number, deviceId: string): Promise<void>;
+  find(userId: string, deviceId: string): Promise<RefreshToken | null>;
+  delete(userId: string, deviceId: string): Promise<void>;
 }

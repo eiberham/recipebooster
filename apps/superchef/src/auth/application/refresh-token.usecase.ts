@@ -26,7 +26,7 @@ export class RefreshTokenUsecase extends AuthTokenGenerator {
   }
 
   async create(
-    userId: number,
+    userId: string,
     data: CreateRefreshToken,
   ): Promise<RefreshToken> {
     const user = await this.user.findBy({ id: userId });
@@ -42,7 +42,7 @@ export class RefreshTokenUsecase extends AuthTokenGenerator {
   }
 
   async update(
-    userId: number,
+    userId: string,
     deviceId: string,
     token: string,
   ): Promise<AuthTokens> {
@@ -74,7 +74,7 @@ export class RefreshTokenUsecase extends AuthTokenGenerator {
     return { accessToken, refreshToken };
   }
 
-  async delete(userId: number, deviceId: string): Promise<void> {
+  async delete(userId: string, deviceId: string): Promise<void> {
     await this.token.delete(userId, deviceId);
   }
 }

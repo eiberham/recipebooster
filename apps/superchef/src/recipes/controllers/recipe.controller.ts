@@ -1,6 +1,5 @@
 import {
   Controller,
-  ParseIntPipe,
   ValidationPipe,
   Get,
   Req,
@@ -59,7 +58,7 @@ export class RecipeController {
   @Get(':id')
   async getRecipeById(
     @Req() req: Request,
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
   ): Promise<RecipeResponseDto | null> {
     return this.getRecipeByUsecase.getRecipeBy({ id });
   }
@@ -79,7 +78,7 @@ export class RecipeController {
   @Put(':id')
   @ApiBody({ type: UpdateRecipeDto })
   async updateRecipe(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body(ValidationPipe) recipeData: UpdateRecipeDto,
   ): Promise<RecipeResponseDto> {
     return this.updateRecipeUsecase.updateRecipe(id, recipeData);
@@ -88,7 +87,7 @@ export class RecipeController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Roles(Role.ADMIN, Role.VIEWER)
   @Delete(':id')
-  async deleteRecipe(@Param('id', ParseIntPipe) id: number): Promise<void> {
+  async deleteRecipe(@Param('id') id: string): Promise<void> {
     return this.deleteRecipeUsecase.deleteRecipe(id);
   }
 }

@@ -9,7 +9,6 @@ import {
   UseGuards,
   Body,
   ValidationPipe,
-  ParseIntPipe,
   Param,
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -56,7 +55,7 @@ export class PlanController {
   @CacheTTL(30)
   @Get(':id')
   async getPlanById(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
   ): Promise<PlanResponseDto | null> {
     return this.getPlanByUsecase.findBy({ id });
   }
@@ -75,7 +74,7 @@ export class PlanController {
   @Put(':id')
   async updatePlan(
     @Body(ValidationPipe) data: UpdatePlanDto,
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
   ): Promise<PlanResponseDto> {
     return this.updatePlanUsecase.updatePlan(id, data);
   }
@@ -83,7 +82,7 @@ export class PlanController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Roles(Role.ADMIN)
   @Delete(':id')
-  async deletePlan(@Param('id', ParseIntPipe) id: number): Promise<void> {
+  async deletePlan(@Param('id') id: string): Promise<void> {
     await this.deletePlanUsecase.deletePlan(id);
   }
 }

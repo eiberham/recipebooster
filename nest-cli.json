@@ -10,6 +10,15 @@
   "monorepo": true,
   "root": "apps",
   "projects": {
+    "analytics": {
+      "type": "application",
+      "root": "apps/analytics",
+      "entryFile": "main",
+      "sourceRoot": "apps/analytics/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/analytics/tsconfig.app.json"
+      }
+    },
     "rabbitmq": {
       "type": "application",
       "root": "apps/rabbitmq",

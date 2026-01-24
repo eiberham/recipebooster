@@ -8,12 +8,10 @@ import { UpdateRecipeUsecase } from './application/update-recipe.usecase';
 import { RecipeRepositoryImpl } from './infrastructure/prisma-recipe.repository';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
-import { CacheService } from '@/redis/redis.service';
 
 @Module({
   controllers: [RecipeController],
   providers: [
-    CacheService,
     JwtService,
     CreateRecipeUsecase,
     UpdateRecipeUsecase,

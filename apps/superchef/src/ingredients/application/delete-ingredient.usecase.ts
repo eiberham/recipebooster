@@ -10,7 +10,7 @@ export class DeleteIngredientUsecase {
     private readonly ingredient: IngredientRepository,
   ) {}
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     try {
       await this.ingredient.delete(id);
     } catch (e) {

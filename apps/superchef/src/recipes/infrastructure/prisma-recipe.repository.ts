@@ -61,7 +61,7 @@ export class RecipeRepositoryImpl implements RecipeRepository {
     return created;
   }
 
-  async update(id: number, recipe: UpdateRecipeData): Promise<Recipe> {
+  async update(id: string, recipe: UpdateRecipeData): Promise<Recipe> {
     const { ingredients, ...rest } = recipe;
     const updated = await this.prisma.recipe.update({
       where: { id },
@@ -84,7 +84,7 @@ export class RecipeRepositoryImpl implements RecipeRepository {
     return updated;
   }
 
-  async delete(id: number): Promise<Recipe> {
+  async delete(id: string): Promise<Recipe> {
     return this.prisma.recipe.delete({
       where: { id },
     });

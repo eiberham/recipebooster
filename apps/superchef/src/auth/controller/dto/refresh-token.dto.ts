@@ -2,9 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNumber } from 'class-validator';
 
 export class RefreshTokenDto {
-  @ApiProperty({ example: 1 })
-  @IsNumber()
-  userId: number;
+  @ApiProperty({ example: 'user-id-1234' })
+  @IsString()
+  userId: string;
 
   @ApiProperty({ example: 'device-id-1234' })
   @IsString()

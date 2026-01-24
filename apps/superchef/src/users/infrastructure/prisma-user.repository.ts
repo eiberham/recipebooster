@@ -135,7 +135,7 @@ export class UserRepositoryImpl implements UserRepository {
     return user;
   }
 
-  async update(id: number, data: UpdateUserData): Promise<UserResponseData> {
+  async update(id: string, data: UpdateUserData): Promise<UserResponseData> {
     const {
       name,
       email,
@@ -182,7 +182,7 @@ export class UserRepositoryImpl implements UserRepository {
     return user;
   }
 
-  async delete(id: number): Promise<UserResponseData> {
+  async delete(id: string): Promise<UserResponseData> {
     const exists = await this.prisma.user.findUnique({
       where: { id },
     });

@@ -1,6 +1,5 @@
 import {
   Controller,
-  ParseIntPipe,
   ValidationPipe,
   Get,
   Req,
@@ -59,7 +58,7 @@ export class UserController {
   @Get(':id')
   async getUserById(
     @Req() request: Request,
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
   ): Promise<UserResponseDto | null> {
     return this.getUserByUsecase.findBy({ id });
   }
@@ -82,7 +81,7 @@ export class UserController {
   @ApiBody({ type: UpdateUserDto })
   async updateUser(
     @Req() request: Request,
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
   ): Promise<UserResponseDto> {
     const userData = updateUserDto;
@@ -94,7 +93,7 @@ export class UserController {
   @Delete(':id')
   async deleteUser(
     @Req() request: Request,
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
   ): Promise<void> {
     return this.deleteUserUsecase.deleteUser(id);
   }

@@ -10,7 +10,7 @@ export class DeleteUserUsecase {
     private readonly userRepository: UserRepository,
   ) {}
 
-  async deleteUser(id: number): Promise<void> {
+  async deleteUser(id: string): Promise<void> {
     try {
       await this.userRepository.delete(id);
     } catch (e) {

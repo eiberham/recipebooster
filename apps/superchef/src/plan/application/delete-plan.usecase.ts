@@ -8,7 +8,7 @@ export class DeletePlanUsecase {
     private readonly plan: PlanRepository,
   ) {}
 
-  async deletePlan(id: number): Promise<void> {
+  async deletePlan(id: string): Promise<void> {
     return this.plan.delete(id);
   }
 }

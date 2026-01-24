@@ -2,7 +2,7 @@ import { IsNumber, IsString } from 'class-validator';
 
 export class RecipeIngredient {
   @IsNumber()
-  ingredientId: number;
+  ingredientId: string;
 
   @IsNumber()
   quantity: number | null;

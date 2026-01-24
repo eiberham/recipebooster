@@ -11,7 +11,7 @@ export class UpdateRecipeUsecase {
   ) {}
 
   async updateRecipe(
-    id: number,
+    id: string,
     recipeData: UpdateRecipeData,
   ): Promise<Recipe> {
     return this.recipe.update(id, recipeData);

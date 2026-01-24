@@ -36,14 +36,14 @@ export class PrismaPlanRepository implements PlanRepository {
     });
   }
 
-  async update(id: number, data: UpdatePlanData): Promise<Plan> {
+  async update(id: string, data: UpdatePlanData): Promise<Plan> {
     return this.prisma.plan.update({
       where: { id },
       data,
     });
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     await this.prisma.plan.delete({
       where: { id },
     });

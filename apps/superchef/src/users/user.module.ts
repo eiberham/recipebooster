@@ -10,7 +10,6 @@ import { UserRepositoryImpl } from './infrastructure/prisma-user.repository';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@/auth/guards/auth.guard';
-import { CacheService } from '@/redis/redis.service';
 import { PlanModule } from '@/plan/plan.module';
 
 @Module({
@@ -30,7 +29,6 @@ import { PlanModule } from '@/plan/plan.module';
     PlanModule,
   ],
   providers: [
-    CacheService,
     JwtService,
     CreateUserUsecase,
     UpdateUserUsecase,

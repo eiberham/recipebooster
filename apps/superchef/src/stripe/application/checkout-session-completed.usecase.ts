@@ -35,7 +35,15 @@ export class CheckoutSessionCompletedUsecase {
     const user = await this.getUserByUsecase.findBy({
       stripeCustomerId: stripeCustomerId as string,
     });
-    const userId = user?.id;
+
+    if (!user) {
+      this.Logger.warn(
+        `User with Stripe Customer ID ${stripeCustomerId} not found.`,
+      );
+      return;
+    }
+
+    const userId = user.id;
 
     const items = await this.stripe.getLineItems(sessionId);
     const price = items?.[0].price;
@@ -51,7 +59,7 @@ export class CheckoutSessionCompletedUsecase {
 
       const subscription =
         await this.getSubscriptionByUsecase.getSubscriptionBy({
-          userId: Number(userId),
+          userId,
         });
 
       if (!subscription) {
@@ -94,7 +102,7 @@ export class CheckoutSessionCompletedUsecase {
 
       try {
         await Promise.all([
-          this.updateUserUsecase.updateUser(Number(userId), {
+          this.updateUserUsecase.updateUser(userId, {
             stripeCustomerId: stripeCustomerId as string,
           }),
           this.updateSubscriptionUsecase.update(subscription.id, updateTo),

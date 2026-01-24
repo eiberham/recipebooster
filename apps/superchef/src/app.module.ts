@@ -10,27 +10,31 @@ import { RecipeModule } from './recipes/recipe.module';
 import { IngredientModule } from './ingredients/ingredient.module';
 import { AuthModule } from './auth/auth.module';
 import { ChatModule } from './chat/chat.module';
-import { RedisModule } from './redis/redis.module';
 import { StripeModule } from './stripe/stripe.module';
 import { PlanModule } from './plan/plan.module';
 import { CheckoutModule } from './checkout/checkout.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { KafkaModule } from './kafka.module';
 
 @Module({
   imports: [
+    KafkaModule,
     CacheModule.register({ isGlobal: true }),
     StripeModule.forRootAsync(),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [__dirname + '/../../../apps/superchef/.env'],
     }),
-    RedisModule,
     UserModule,
     RecipeModule,
     IngredientModule,
     ThrottlerModule.forRoot({
-      ttl: 60,
-      limit: 10,
+      throttlers: [
+        {
+          ttl: 60000,
+          limit: 10,
+        },
+      ]
     }),
     AuthModule,
     ChatModule,

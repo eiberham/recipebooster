@@ -7,7 +7,6 @@ import { UpdatePlanUsecase } from './application/update-plan.usecase';
 import { CreatePlanUsecase } from './application/create-plan.usecase';
 import { PrismaPlanRepository } from './infrastructure/prisma-plan.repository';
 import { PrismaService } from '@/prisma/prisma.service';
-import { CacheService } from '@/redis/redis.service';
 import { JwtService } from '@nestjs/jwt';
 
 @Module({
@@ -23,7 +22,6 @@ import { JwtService } from '@nestjs/jwt';
     UpdatePlanUsecase,
     DeletePlanUsecase,
     PrismaService,
-    CacheService,
     JwtService,
   ],
   exports: ['PLAN_REPOSITORY'],

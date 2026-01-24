@@ -7,7 +7,6 @@ import {
   Put,
   Delete,
   Param,
-  ParseIntPipe,
   ValidationPipe,
   HttpCode,
   HttpStatus,
@@ -59,7 +58,7 @@ export class IngredientController {
   @Get(':id')
   async findById(
     @Req() request: Request,
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
   ): Promise<IngredientResponseDto | null> {
     return this.getIngredient.findBy({ id });
   }
@@ -80,7 +79,7 @@ export class IngredientController {
   @Put(':id')
   @ApiBody({ type: UpdateIngredientDto })
   async update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body(ValidationPipe) ingredient: UpdateIngredientDto,
   ): Promise<IngredientResponseDto> {
     return this.updateIngredient.update(id, ingredient);
@@ -89,7 +88,7 @@ export class IngredientController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Roles(Role.ADMIN, Role.VIEWER)
   @Delete(':id')
-  async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
+  async delete(@Param('id') id: string): Promise<void> {
     return this.deleteIngredient.delete(id);
   }
 }

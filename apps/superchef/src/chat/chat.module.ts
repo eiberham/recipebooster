@@ -4,14 +4,15 @@ import { ChatController } from './controller/chat.controller';
 import { AgentUseCase } from './application/agent.usecase';
 import { RecipeRepositoryImpl } from '@/recipes/infrastructure/prisma-recipe.repository';
 import { GetRecipeByUsecase } from '@/recipes/application/get-recipe-by.usecase';
-
 import { JwtService } from '@nestjs/jwt';
-import { CacheService } from '@/redis/redis.service';
+import { KafkaModule } from '../kafka.module';
 
 @Module({
+  imports: [
+    KafkaModule
+  ],
   controllers: [ChatController],
   providers: [
-    CacheService,
     JwtService,
     PrismaService,
     {
