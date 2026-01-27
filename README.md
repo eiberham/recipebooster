@@ -51,7 +51,7 @@ TLDR features:
 - Clean NestJS architecture
 - Pragmatic use of message queue
 
-## Routes
+## :electric_plug: Routes
 
 All API endpoints are documented using **Swagger (OpenAPI)**.
 
@@ -127,16 +127,20 @@ Below is a high level overview of the available routes:
     <tr>
       <td>POST</td><td>/chat</td><td>Sends a message to the superchef agent</td><td>Protected</td><td>Admin</td>
     </tr>
+    <tr>
+      <td>GET</td><td>/analytics/top-recipes</td><td>Get the top ten most improved recipes</td><td>Protected</td><td>Admin, Viewer</td>
+    </tr>
   </tbody>
 </table>
 
-## Authentication & Security
+## :shield: Authentication & Security
 
 #### JWT-based Authentication
 
 - Stateless authentication using JWT access tokens
 - Tokens are issued on login and required for protected routes
 - Designed to be compatible with API clients and frontends.
+- Refresh tokens, enabling token rotation and secure session renewal without re-authentication.
 
 #### Role-Based Access Control (RBAC)
 
@@ -159,7 +163,7 @@ RBAC is applied at the route level, ensuring fine grained authorization.
 - Prevents excessive requests to sensitive endpoints
 - Configurable limits per route or globally.
 
-## Observability & Distributed Tracing
+## :flashlight: Observability & Distributed Tracing
 
 This project implements a high-level observability pattern using [OpenTelemetry](https://opentelemetry.io/) and [Honeycomb](https://www.honeycomb.io/). Instead of traditional isolated logs, we use Distributed Tracing to correlate every log entry with a specific request flow.
 
@@ -192,7 +196,7 @@ async handle() {
 
 Traces, errors, and performance metrics are available in Honeycomb. Search by traceId to see the full "waterfall" view of any operation.
 
-## Async Processing with RabbitMQ
+## :rabbit2: Async Processing with RabbitMQ
 
 #### Event-driven Architecture
 
@@ -207,31 +211,20 @@ Traces, errors, and performance metrics are available in Honeycomb. Search by tr
 - Workers consume and process them independently
 - Designed to be monolith-friendly, without premature microservices.
 
-## Caching (Redis)
+## :brain: Caching (Redis)
 
-Superchef uses Redis as an in-memory cache to reduce latency and decrease load on the primary PostgreSQL database.
+Superchef uses [Redis](https://redis.io/) as an in-memory cache to reduce latency and decrease load on the primary database.
 
-The cache is applied to read-heavy endpoints following the **cache-aside** pattern:
+The cache is applied to read-heavy endpoints, which keeps [PostgreSQL](https://www.postgresql.org/) as the single source of thruth while improving response times for frequent reads.
 
-- On read:
-  - The application first checks redis.
-  - If the data is present, it is returned immediately.
-  - If not, the data is fetched from PostgreSQL and stored in Redis with a TTL.
-
-- On write:
-  - Data is persisted synchronously to PostgreSQL.
-  - Related cache keys are invalidated to guarantee consistency.
-
-This approach keeps PostgreSQL as the sigle source of thruth while improving response times for frequent reads.
-
-## User Preferences
+## :gear: User Preferences
 
 Each user can configure dietary preferences that are stored as JSON object inside the user table.
 Suported fields:
 - `diet`: "none" | "vegetarian" | "vegan" | "omnivore"
 - `alergies`: string[]
 
-## AI Recipe Assistant
+## :robot: AI Recipe Assistant
 
 Superchef includes an AI-powered assistant via the `/chat` endpoint, that helps users improve existing recipes by suggesting variations, optimizations, or substitutions based on natural language prompts.
 
@@ -239,7 +232,40 @@ The assistant is implemented as a backend agent powered by OpenAI and orchestrat
 
 All suggestions are generated in the context of a real recipe stored in the database.
 
-## Stripe Integration
+## :bar_chart: Analytics
+
+This module handles the processing and delivery of recipe popularity metrics using a decoupled, event-driven architecture. By offloading analytics from the main API, we ensure high performance and system resilience.
+
+#### Architecture Overview
+
+The system implements separation of concerns by decoupling read and write operations through an event bus:
+
+1. **Ingestion:** Every time a recipe is improved through the ai agent, a `recipe.improvement` event is published to kafka.
+2. **Processing:** The analytics microservice reads this event and performs an atomic increment in redis.
+3. **Consumption:** The api retrieves the ranking by talking to the analytics microservice through a rpc-like request, fetching the pre-aggregated data from redis.
+
+For better understanding you can find the detailed process in the imagen below:
+
+<p align="center">
+  <img src="./analytics.png" alt="superchef" />
+</p>
+
+#### Specification
+
+GET `/analytics/top-recipes`
+
+- Retrieves the top ten most improved recipes.
+
+Sample response:
+
+```json
+[
+  { "id": "uuid-101", "name": "Classic Lasagna", "count": 245 },
+  { "id": "uuid-202", "name": "Spicy Ramen", "count": 189 }
+]
+```
+
+## :credit_card: Stripe Integration
 
 Superchef integrates with Stripe for subscription management, allowing users to subscribe to a basic plan and access enhanced features.
 
@@ -268,7 +294,7 @@ Superchef integrates with Stripe for subscription management, allowing users to 
 $ npm install
 ```
 
-## Environment variables
+## :closed_lock_with_key: Environment variables
 
 Create a `.env` file in the root of your project and add the following env vars:
 

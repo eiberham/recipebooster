@@ -15,6 +15,7 @@ import { PlanModule } from './plan/plan.module';
 import { CheckoutModule } from './checkout/checkout.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { KafkaModule } from './kafka.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { KafkaModule } from './kafka.module';
     ChatModule,
     PlanModule,
     CheckoutModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [

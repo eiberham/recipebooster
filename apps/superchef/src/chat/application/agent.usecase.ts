@@ -1,4 +1,4 @@
-import { Injectable, Inject, OnModuleInit } from '@nestjs/common'
+import { Injectable, Inject } from '@nestjs/common'
 import { createAgent } from 'langchain'
 import { InMemoryStore } from '@langchain/langgraph'
 import { GetRecipeByUsecase } from '../../recipes/application/get-recipe-by.usecase'
@@ -6,7 +6,7 @@ import { createRecipeLookupTool } from '../infrastructure/tools/recipe-lookup.to
 import { ClientKafka } from '@nestjs/microservices'
 
 @Injectable()
-export class AgentUseCase implements OnModuleInit {
+export class AgentUseCase {
   agent: any;
 
   constructor(
@@ -46,11 +46,5 @@ export class AgentUseCase implements OnModuleInit {
 
       yield chunk.content
     }
-  }
-
-  async onModuleInit() {
-    this.kafka.subscribeToResponseOf('recipe.improvement')
-    await this.kafka.connect()
-    console.log('Kafka producer connected')
   }
 }

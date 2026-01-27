@@ -1,5 +1,5 @@
-import { Global, Module } from '@nestjs/common';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { Global, Module, OnModuleInit, Inject } from '@nestjs/common';
+import { ClientsModule, Transport, ClientKafka } from '@nestjs/microservices';
 
 @Global() // Makes the module available globally
 @Module({
@@ -14,7 +14,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
             clientId: 'superchef-api',
           },
           consumer: {
-            groupId: 'analytics-consumer',
+            groupId: 'api-consumer',
           },
         },
       },
@@ -22,4 +22,17 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
   ],
   exports: [ClientsModule], // Export the module so others can use it
 })
-export class KafkaModule {}
+export class KafkaModule implements OnModuleInit {
+  constructor(@Inject('KAFKA_SERVICE') private readonly kafka: ClientKafka) {}
+
+  async onModuleInit() {
+    const patterns = ['get.top.recipes']
+    
+    patterns.forEach(pattern => {
+      this.kafka.subscribeToResponseOf(pattern)
+    })
+
+    await this.kafka.connect()
+    console.log('✅ Kafka infrastructure initialized')
+  }
+}
